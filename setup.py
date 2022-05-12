@@ -16,6 +16,6 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/VelascoAMath/PythonDataStructures/issues"
     },
     license='MIT',
-    packages=['Data_Structures'],
+    packages=['PythonDataStructures'],
     install_requires=['requests'],
 )
