@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='vel_data_structures',
+    name='Velasco\' Python Structures',
     version='0.0.1',
     author='Alfredo Velasco',
     author_email='avelasco@princeton.edu',
@@ -16,6 +16,6 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/VelascoAMath/vel_data_structures/issues"
     },
     license='MIT',
-    packages=['PythonDataStructures'],
+    packages=['vel_data_structures'],
     install_requires=['requests'],
 )
