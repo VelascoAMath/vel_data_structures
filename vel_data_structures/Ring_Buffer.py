@@ -1,4 +1,9 @@
+'''
+A ring buffer.
+This is a queue that can hold only n items at most.
 
+@author: Alfredo Velasco
+'''
 
 class Ring_Buffer(object):
 
@@ -18,23 +23,45 @@ class Ring_Buffer(object):
 
 
     def capacity(self):
-        '''Returns the capacity of this ring buffer.'''
+        '''
+        Returns the capacity of this ring buffer.
+        
+        :returns int capacity: the capacity
+        '''
         return self.capacity
 
     def size():
-        '''Returns the number of items currently in this ring buffer.'''
+        '''
+        Returns the number of items currently in this ring buffer.
+        
+        :returns int size: the number of items in the queue
+        '''
+        
         return self.size
 
     def isEmpty(self):
-        '''Is this ring buffer empty (size equals zero)?'''
+        '''
+        Is this ring buffer empty (size equals zero)?
+        
+        :returns bool: is size is 0
+        '''
         return self.size == 0
 
     def isFull(self):
-        '''Is this ring buffer full (size equals capacity)?'''
+        '''
+        Is this ring buffer full (size equals capacity)?
+    
+        :returns bool: if size == capacity
+        '''
         return self.size == self.capacity
 
     def enqueue(self, x):
-        '''Adds item x to the end of this ring buffer.'''
+        '''
+        Adds item x to the end of this ring buffer.
+
+        :param x: the item to insert
+        :raises Exception: if the ring buffer is full
+        '''
         if (self.isFull()):
             raise Exception("RingBuffer is already full and cannot enqueue!")
         
@@ -43,7 +70,12 @@ class Ring_Buffer(object):
         self.last = (self.last + 1) % self.capacity
 
     def dequeue(self):
-        '''Deletes and returns the item at the front of this ring buffer.'''
+        '''
+        Deletes and returns the item at the front of this ring buffer.
+
+        :returns item: the first item in the queue
+        :raises Exception: if the ring buffer is empty
+        '''
         if (self.isEmpty()):
             raise Exception("RingBuffer is empty and cannot dequeue!")
         self.size -= 1
@@ -52,7 +84,12 @@ class Ring_Buffer(object):
         return item
 
     def peek(self):
-        '''Returns the item at the front of this ring buffer.'''
+        '''
+        Returns the item at the front of this ring buffer.
+
+        :returns item: the first item in the queue
+        :raises Exception: if the ring buffer is empty
+        '''
         if self.isEmpty():
             raise Exception("Cannot peek at an empty ring buffer!")
         

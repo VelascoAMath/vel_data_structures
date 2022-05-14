@@ -1,0 +1,516 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>vel_data_structures package &#8212; Velasco&#39;s Python Data Structures 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="setup module" href="setup.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="setup.html" title="setup module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Velasco&#39;s Python Data Structures 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">vel_data_structures</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">vel_data_structures package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="vel-data-structures-package">
+<h1>vel_data_structures package<a class="headerlink" href="#vel-data-structures-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-vel_data_structures.AVL">
+<span id="vel-data-structures-avl-module"></span><h2>vel_data_structures.AVL module<a class="headerlink" href="#module-vel_data_structures.AVL" title="Permalink to this headline">¶</a></h2>
+<p>A multi-set that is implemented using an AVL tree
+<a class="reference external" href="https://en.wikipedia.org/wiki/AVL_tree">https://en.wikipedia.org/wiki/AVL_tree</a></p>
+<p>&#64;author: Alfredo Velasco</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="vel_data_structures.AVL.AVL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vel_data_structures.AVL.</span></span><span class="sig-name descname"><span class="pre">AVL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL.AVL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents an AVL tree</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL.AVL.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL.AVL.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an item to the tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> – The item to be inserted</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL.AVL.items_yield">
+<span class="sig-name descname"><span class="pre">items_yield</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL.AVL.items_yield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function that iterates DFS through the items in the tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return item</dt>
+<dd class="field-odd"><p>The items in the tree</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL.AVL.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL.AVL.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes an item from the tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> – The item to be deleted</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – if item is not in the tree</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL.AVL.to_dot">
+<span class="sig-name descname"><span class="pre">to_dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL.AVL.to_dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method writes out the AVL to a .dot file so that it can be visualized by graphviz.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f_name</strong> (<em>str</em>) – the name of the files</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – if the f_name has a non .dot extension</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vel_data_structures.AVL.main">
+<span class="sig-prename descclassname"><span class="pre">vel_data_structures.AVL.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-vel_data_structures.AVL_Dict">
+<span id="vel-data-structures-avl-dict-module"></span><h2>vel_data_structures.AVL_Dict module<a class="headerlink" href="#module-vel_data_structures.AVL_Dict" title="Permalink to this headline">¶</a></h2>
+<p>A python dictionary implemented using an AVL tree
+<a class="reference external" href="https://en.wikipedia.org/wiki/AVL_tree">https://en.wikipedia.org/wiki/AVL_tree</a></p>
+<p>&#64;author: Alfredo Velasco</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="vel_data_structures.AVL_Dict.AVL_Dict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vel_data_structures.AVL_Dict.</span></span><span class="sig-name descname"><span class="pre">AVL_Dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL_Dict.AVL_Dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A dictionary that uses an AVL tree</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL_Dict.AVL_Dict.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL_Dict.AVL_Dict.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a key-val pair to the tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – The key to be inserted</p></li>
+<li><p><strong>val</strong> – The value to which key maps</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL_Dict.AVL_Dict.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL_Dict.AVL_Dict.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes all of the items in the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL_Dict.AVL_Dict.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL_Dict.AVL_Dict.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value to which key maps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> – The key whose mapping we’ll retreive</p>
+</dd>
+<dt class="field-even">Return val</dt>
+<dd class="field-even"><p>The value to which key maps</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL_Dict.AVL_Dict.items_yield">
+<span class="sig-name descname"><span class="pre">items_yield</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL_Dict.AVL_Dict.items_yield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function that iterates DFS through the (key, value) pairs in the tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns (key, val)</dt>
+<dd class="field-odd"><p>The key-value pairs in the tree</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL_Dict.AVL_Dict.keys_yield">
+<span class="sig-name descname"><span class="pre">keys_yield</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL_Dict.AVL_Dict.keys_yield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function that iterates DFS through the keys in the tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns key</dt>
+<dd class="field-odd"><p>The keys in the tree</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.AVL_Dict.AVL_Dict.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL_Dict.AVL_Dict.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes an item from the tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> – the key to be deleted</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – if key is not in the tree</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vel_data_structures.AVL_Dict.main">
+<span class="sig-prename descclassname"><span class="pre">vel_data_structures.AVL_Dict.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.AVL_Dict.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-vel_data_structures.BHeap">
+<span id="vel-data-structures-bheap-module"></span><h2>vel_data_structures.BHeap module<a class="headerlink" href="#module-vel_data_structures.BHeap" title="Permalink to this headline">¶</a></h2>
+<p>A Binomial Heap
+<a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_heap">https://en.wikipedia.org/wiki/Binomial_heap</a></p>
+<p>&#64;author: Alfredo Velasco</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="vel_data_structures.BHeap.BHeap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vel_data_structures.BHeap.</span></span><span class="sig-name descname"><span class="pre">BHeap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BHeap.BHeap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.BHeap.BHeap.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BHeap.BHeap.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts an item into the heap</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> – the item to insert</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.BHeap.BHeap.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BHeap.BHeap.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes and returns the smallest item from the heap</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns item</dt>
+<dd class="field-odd"><p>the smallest item in the heap</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – if the heap is empty</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vel_data_structures.BHeap.main">
+<span class="sig-prename descclassname"><span class="pre">vel_data_structures.BHeap.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BHeap.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-vel_data_structures.BTree">
+<span id="vel-data-structures-btree-module"></span><h2>vel_data_structures.BTree module<a class="headerlink" href="#module-vel_data_structures.BTree" title="Permalink to this headline">¶</a></h2>
+<p>A multiset that’s implemented by using a B-tree
+<a class="reference external" href="https://en.wikipedia.org/wiki/B-tree">https://en.wikipedia.org/wiki/B-tree</a></p>
+<p>&#64;author: Alfredo Velasco</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="vel_data_structures.BTree.BTree">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vel_data_structures.BTree.</span></span><span class="sig-name descname"><span class="pre">BTree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">vel_data_structures.BTree._Node</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BTree.BTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A multiset that’s implemented using a B-tree</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.BTree.BTree.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BTree.BTree.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an item to the tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> – the item to insert</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.BTree.BTree.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BTree.BTree.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes item from the multiset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> – the item to remove</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – if item is not in the tree</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.BTree.BTree.to_dot">
+<span class="sig-name descname"><span class="pre">to_dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BTree.BTree.to_dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method writes out the AVL to a .dot file so that it can be visualized by graphviz</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f_name</strong> (<em>str</em>) – the name of the file where the output will be printed</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – if f_name has a non .dot extension</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vel_data_structures.BTree.get_insertion_index">
+<span class="sig-prename descclassname"><span class="pre">vel_data_structures.BTree.</span></span><span class="sig-name descname"><span class="pre">get_insertion_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BTree.get_insertion_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the position where item should be inserted so that l stays sorted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – the item to insert</p></li>
+<li><p><strong>l</strong> – the list where item could be inserted</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retun index</dt>
+<dd class="field-even"><p>the index where item would be inserted</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vel_data_structures.BTree.insert_into_list">
+<span class="sig-prename descclassname"><span class="pre">vel_data_structures.BTree.</span></span><span class="sig-name descname"><span class="pre">insert_into_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BTree.insert_into_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts item into l in a position that keeps l sorted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – the item to insert</p></li>
+<li><p><strong>l</strong> – the list where item will be inserted</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vel_data_structures.BTree.main">
+<span class="sig-prename descclassname"><span class="pre">vel_data_structures.BTree.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.BTree.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-vel_data_structures.Ring_Buffer">
+<span id="vel-data-structures-ring-buffer-module"></span><h2>vel_data_structures.Ring_Buffer module<a class="headerlink" href="#module-vel_data_structures.Ring_Buffer" title="Permalink to this headline">¶</a></h2>
+<p>A ring buffer.
+This is a queue that can hold only n items at most.</p>
+<p>&#64;author: Alfredo Velasco</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.Ring_Buffer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vel_data_structures.Ring_Buffer.</span></span><span class="sig-name descname"><span class="pre">Ring_Buffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capacity</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.Ring_Buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A ring buffer of size n</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.Ring_Buffer.capacity">
+<span class="sig-name descname"><span class="pre">capacity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.Ring_Buffer.capacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the capacity of this ring buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns int capacity</dt>
+<dd class="field-odd"><p>the capacity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.Ring_Buffer.dequeue">
+<span class="sig-name descname"><span class="pre">dequeue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.Ring_Buffer.dequeue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes and returns the item at the front of this ring buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns item</dt>
+<dd class="field-odd"><p>the first item in the queue</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – if the ring buffer is empty</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.Ring_Buffer.enqueue">
+<span class="sig-name descname"><span class="pre">enqueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.Ring_Buffer.enqueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds item x to the end of this ring buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – the item to insert</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – if the ring buffer is full</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.Ring_Buffer.isEmpty">
+<span class="sig-name descname"><span class="pre">isEmpty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.Ring_Buffer.isEmpty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this ring buffer empty (size equals zero)?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns bool</dt>
+<dd class="field-odd"><p>is size is 0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.Ring_Buffer.isFull">
+<span class="sig-name descname"><span class="pre">isFull</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.Ring_Buffer.isFull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this ring buffer full (size equals capacity)?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns bool</dt>
+<dd class="field-odd"><p>if size == capacity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.Ring_Buffer.peek">
+<span class="sig-name descname"><span class="pre">peek</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.Ring_Buffer.peek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the item at the front of this ring buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns item</dt>
+<dd class="field-odd"><p>the first item in the queue</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – if the ring buffer is empty</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.Ring_Buffer.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.Ring_Buffer.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of items currently in this ring buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns int size</dt>
+<dd class="field-odd"><p>the number of items in the queue</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vel_data_structures.Ring_Buffer.main">
+<span class="sig-prename descclassname"><span class="pre">vel_data_structures.Ring_Buffer.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vel_data_structures.Ring_Buffer.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-vel_data_structures">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-vel_data_structures" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">vel_data_structures package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vel_data_structures.AVL">vel_data_structures.AVL module</a></li>
+<li><a class="reference internal" href="#module-vel_data_structures.AVL_Dict">vel_data_structures.AVL_Dict module</a></li>
+<li><a class="reference internal" href="#module-vel_data_structures.BHeap">vel_data_structures.BHeap module</a></li>
+<li><a class="reference internal" href="#module-vel_data_structures.BTree">vel_data_structures.BTree module</a></li>
+<li><a class="reference internal" href="#module-vel_data_structures.Ring_Buffer">vel_data_structures.Ring_Buffer module</a></li>
+<li><a class="reference internal" href="#module-vel_data_structures">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="setup.html"
+                          title="previous chapter">setup module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vel_data_structures.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="setup.html" title="setup module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Velasco&#39;s Python Data Structures 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vel_data_structures</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">vel_data_structures package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Alfredo Velasco.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+    </div>
+  </body>
+</html>

@@ -1,4 +1,8 @@
 '''
+
+A multi-set that is implemented using an AVL tree
+https://en.wikipedia.org/wiki/AVL_tree
+
 @author: Alfredo Velasco
 '''
 
@@ -13,12 +17,19 @@ import os
 
 @dataclass
 class _Node(object):
-	"""docstring for _Node"""
+	"""
+	A node in the AVL tree
+	"""
 
+	# The item the node holds
 	item:    int = None
+	# The height of the sub-tree
 	height:  int = 1
+	# Balance factor of this tree
 	balance: int = 0
+	# The left child
 	left:    int = None
+	# The right child
 	right:   int = None
 
 	def __repr__(self):
@@ -30,10 +41,15 @@ class _Node(object):
 class AVL(object):
 	"""Represents an AVL tree"""
 
-	n: int = 0
-	root: _Node = field(default_factory=_Node)
+	_n: int = 0
+	_root: _Node = field(default_factory=_Node)
 
 	def __init__(self, items=None):
+		'''
+		Initializes the tree with the items (if provided)
+
+		:param list( items ) items: list of items to insert into the tree
+		'''
 		self.__post_init__()
 
 		if items is not None:
@@ -42,19 +58,20 @@ class AVL(object):
 
 	def __post_init__(self):
 		super(AVL, self).__init__()
-		self.n = 0
-		self.root = None
+		self._n = 0
+		self._root = None
 
 	def add(self, item):
 		'''
 		Adds an item to the tree
-		param: item - The item to be inserted
+
+		:param item: The item to be inserted
 		'''
-		if self.n == 0:
-			self.n += 1
-			self.root = _Node(item)
+		if self._n == 0:
+			self._n += 1
+			self._root = _Node(item)
 		else:
-			curr = self.root
+			curr = self._root
 			traversed_node_list = []
 
 			# Generic BST insertion
@@ -63,7 +80,7 @@ class AVL(object):
 				if item < curr.item:
 					if curr.left is None:
 						curr.left = _Node(item)
-						self.n += 1
+						self._n += 1
 						self._fix_heights(traversed_node_list)
 						return
 					else:
@@ -71,7 +88,7 @@ class AVL(object):
 				else:
 					if curr.right is None:
 						curr.right = _Node(item)
-						self.n += 1
+						self._n += 1
 						self._fix_heights(traversed_node_list)
 						return
 					else:
@@ -81,17 +98,19 @@ class AVL(object):
 	def remove(self, item):
 		'''
 		Removes an item from the tree
-		param: item - The item to be deleted
+
+		:param item: The item to be deleted
+		:raises KeyError: if item is not in the tree
 		'''
-		if self.root is None:
+		if self._root is None:
 			raise KeyError(f"Cannot remove from an empty tree!")
 
-		if self.n == 1:
-			self.root = None
-			self.n = 0
+		if self._n == 1:
+			self._root = None
+			self._n = 0
 			return
 
-		curr = self.root
+		curr = self._root
 		curr_parent = None
 		traversed_node_list = []
 		while True:
@@ -112,15 +131,16 @@ class AVL(object):
 		traversed_node_list.pop()
 		self.__remove_node(curr, curr_parent, traversed_node_list)
 		self._fix_heights(traversed_node_list)
-		self.n -= 1
+		self._n -= 1
 
 
 
 	def __remove_node(self, node, parent, traversed_node_list=None):
 		'''
 		A method to the node and pass its value to the parent
-		param: node - The node we want to delete
-		param: parent - The parent node of node
+		:param node: The node we want to delete
+		:param parent: The parent node of node
+		:raises Exception: if node isn't a _Node or the parent is None
 		'''
 		if not isinstance(node, _Node):
 			raise Exception(f"The node must be of type _Node but is instead {type(node)}")
@@ -129,7 +149,7 @@ class AVL(object):
 		if node is None:
 			raise Exception(f"The node is None!")
 
-		if parent is None and node is not self.root:
+		if parent is None and node is not self._root:
 			raise Exception(f"The parent is None!")
 
 
@@ -176,13 +196,13 @@ class AVL(object):
 	def _fix_heights(self, node_list):
 		'''
 		Balances all of the nodes in node_list
-		param: node_list - list of nodes to adjust
+		:param node_list: list of nodes to adjust
 		'''
 		for i in range(1, len(node_list)):
 			if node_list[i - 1].left is not node_list[i] and node_list[i - 1].right is not node_list[i]:
 				raise Exception(f"Illegal node traversal! {node_list[i - 1]} is not the parent of {node_list[i]}!")
 
-		if node_list[0] is not self.root:
+		if node_list[0] is not self._root:
 			raise Exception(f"{node_list[0]=} is not the root!")
 
 		# Calculate the new heights
@@ -197,8 +217,8 @@ class AVL(object):
 	def _fix_height(self, node, parent=None):
 		'''
 		Balances the node so its balance factor is within [-1, 1]
-		param: node - the node we'll balance
-		param: parent - the parent of node
+		:param _Node node: the node we'll balance
+		:param _Node parent: the parent of node
 		'''
 		self._calculate_height(node)
 		self._calculate_balance(node)
@@ -210,8 +230,8 @@ class AVL(object):
 			#          \
 			#            x2
 			if node.right is not None and node.right.balance >= 0:
-				if node is self.root:
-					self.root = node.right
+				if node is self._root:
+					self._root = node.right
 				else:
 					if parent.right is node:
 						parent.right = node.right
@@ -234,8 +254,8 @@ class AVL(object):
 			#      x3      
 			# elif node.right is not None and node.right.balance < 0:
 			else:
-				if node is self.root:
-					self.root = node.right.left
+				if node is self._root:
+					self._root = node.right.left
 				else:
 					if parent.left is node:
 						parent.left = node.right.left
@@ -263,8 +283,8 @@ class AVL(object):
 			#    /
 			#   x2
 			if node.left is not None and node.left.balance <= 0:
-				if node is self.root:
-					self.root = node.left
+				if node is self._root:
+					self._root = node.left
 				else:
 					if parent.left is node:
 						parent.left = node.left
@@ -286,8 +306,8 @@ class AVL(object):
 			#     \       
 			#      x3   
 			else:
-				if node is self.root:
-					self.root = node.left.right
+				if node is self._root:
+					self._root = node.left.right
 				else:
 					if parent.left is node:
 						parent.left = node.left.right
@@ -313,7 +333,7 @@ class AVL(object):
 		'''
 		Calculates the height of an inputted node
 		Note that this assumes that the children have the correct heights
-		param: node - node whose height we'll calculate
+		:param _Node node: node whose height we'll calculate
 		'''
 		if node is None:
 			raise Exception("Can't calculate height on None!")
@@ -335,7 +355,8 @@ class AVL(object):
 		'''
 		Calculates the balance of an inputted node
 		Note that this assumes that the children have the correct balances
-		param: node - node whose balance we'll calculate
+		
+		:param _Node node: node whose balance we'll calculate
 		'''
 		if node is None:
 			raise Exception("Can't calculate balance on None!")
@@ -360,13 +381,14 @@ class AVL(object):
 	def __contains__(self, item):
 		'''
 		Tells if you item is in the tree
-		param: item - the item to find in the tree
-		return: bool - if the item was found in the tree
+
+		:param item: the item to find in the tree
+		:return bool:  if the item was found in the tree
 		'''
-		if self.root is None:
+		if self._root is None:
 			return False
 
-		curr = self.root
+		curr = self._root
 		while True:
 			if curr is None:
 				return False
@@ -382,22 +404,24 @@ class AVL(object):
 	def __len__(self):
 		'''
 		Returns the number of items in the tree
-		return: int - the number of items in the tree
+		
+		:return: int: the number of items in the tree
 		'''
-		return self.n
+		return self._n
 
 
 
 	def items_yield(self):
 		'''
 		Generator function that iterates DFS through the items in the tree
-		Yields: item - The items in the tree
+
+		:return item: The items in the tree
 		'''
-		if self.root is None:
+		if self._root is None:
 			yield from []
 		else:
 			discovered = set()
-			stack = [self.root]
+			stack = [self._root]
 
 			while stack:
 				node = stack[-1]
@@ -432,10 +456,10 @@ class AVL(object):
 		A DFS iterator through the tree
 		'''
 		self.discovered = set()
-		if self.root is None:
+		if self._root is None:
 			self.stack = []
 		else:
-			self.stack = [self.root]
+			self.stack = [self._root]
 		return self
 
 	def __next__(self):
@@ -468,6 +492,13 @@ class AVL(object):
 		raise StopIteration
 
 	def __dfs_str__(self, node=None):
+		'''
+		Returns a DFS representation of the tree
+
+		:param _Node node: a node which we'll print out along with its children
+		:return: a string representation of the tree
+		:rtype: str 
+		'''
 		if node is None:
 			return ''
 
@@ -483,20 +514,24 @@ class AVL(object):
 		return result
 
 	def __repr__(self):
-		if self.root is None:
+		if self._root is None:
 			return 'AVL()'
 
-		return f"AVL({self.__dfs_str__(self.root)})"
+		return f"AVL({self.__dfs_str__(self._root)})"
 
 	def __str__(self):
 		l = [f"{item}" for item in self]
 		return '{' + ', '.join(l) + '}'
 
 
+
 	def to_dot(self, f_name):
 		'''
-		This method writes out the AVL to a .dot file so that it can be visualized by graphviz
-		param: f_name - the name of the files
+
+		   This method writes out the AVL to a .dot file so that it can be visualized by graphviz.
+
+		   :param str f_name: the name of the files
+		   :raises Exception: if the f_name has a non .dot extension
 		'''
 
 		filen, file_ext = os.path.splitext(f_name)
@@ -513,11 +548,11 @@ class AVL(object):
 			f.write('layout=dot\n')
 			f.write('rankdir=UD\n')
 
-			if self.root is not None:
+			if self._root is not None:
 				node_to_index = {}
 				index = 0
 				discovered = set()
-				stack = [self.root]
+				stack = [self._root]
 
 				while stack:
 					node = stack[-1]
@@ -571,11 +606,10 @@ class AVL(object):
 	def _verify_itself(self, node=None):
 		'''
 		Verifies that the tree is balanced
-		Should not be called by users
 		'''
 		if node is None:
-			node = self.root
-		if self.root is None:
+			node = self._root
+		if self._root is None:
 			return
 
 		self._calculate_height_and_balance(node)
@@ -592,13 +626,13 @@ class AVL(object):
 
 def main():
 
-	t = AVL(list(range(512 - 1)))
-	t.to_dot('Trash')
-	return
+	# t = AVL(list(range(512 - 1)))
+	# t.to_dot('Trash')
+	# return
 
 	# Test the remove method
 	# 
-	for n in itertools.chain(range(20), [50, 100]):
+	for n in tqdm(itertools.chain(range(20), [50, 100]), desc='Size'):
 		for x in tqdm(range(10000), desc='Remove'):
 			t = AVL()
 			random.seed(x)
@@ -624,7 +658,7 @@ def main():
 
 	# Test the remove method
 	# 
-	for n in [1000, 10000]:
+	for n in tqdm([1000, 10000], desc='Size'):
 		for x in tqdm(range(100000 // n), desc='Remove'):
 			t = AVL()
 			random.seed(x)

@@ -1,5 +1,6 @@
 '''
 A Binomial Heap
+https://en.wikipedia.org/wiki/Binomial_heap
 
 @author: Alfredo Velasco
 '''
@@ -9,20 +10,28 @@ import random
 from dataclasses import dataclass, field
 
 @dataclass
-class Tree(object):
+class _Tree(object):
 	item: int = None
 	children: list = field(default_factory=list)
 
-	# def __init__(self, item):
-	# 	self.item = item
-	# 	self.children = None
-
 	def get_k(self):
+		'''
+		Returns the order of the tree
+
+		:returns int k: the order of the tree
+		'''
 		if self.children is None:
 			return 0
 		return len(self.children)
 
 	def merge(self, other):
+		'''
+		Merges the tree and returns the merged result
+	
+		:param _Tree other: The other tree we'll merge 
+		:returns _Tree result: A merged _Tree
+		'''
+
 		if self.get_k() != other.get_k():
 			raise Exception("The trees must have the same k! Their ks are {self.get_k()} and {self.get_k()}")
 
@@ -46,87 +55,106 @@ class Tree(object):
 @dataclass
 class BHeap(object):
 
-	forest: list = field(default_factory=list)
-	min_heap: Tree = None
-	n: int = 0
+	_forest: list = field(default_factory=list)
+	_min_heap: _Tree = None
+	_n: int = 0
 
 	def __init__(self, items=None):
+		'''
+		Initializes the tree with the items (if provided)
 
-		self.forest = []
+		:param list( items ) items: list of items to insert into the tree
+		'''
+		self._forest = []
 
 		if items is not None:
 			for item in items:
 				self.insert(item)
 
 
-	def insert_tree(self, curr):
+	def _insert_tree(self, curr):
+		'''
+		Inserts a new tree into the forest
 
-		if not isinstance(curr, Tree):
+		:param _Tree curr: the tree to insert
+	
+		:raises Exception: if curr is not a _Tree
+		'''
+		if not isinstance(curr, _Tree):
 			raise Exception(f"curr must be a tree but is instead {type(curr)}!")
 
 		k = curr.get_k()
 
-		while k >= len(self.forest) or self.forest[k] is not None:
+		while k >= len(self._forest) or self._forest[k] is not None:
 			added_space = False
 
-			while k >= len(self.forest):
-				self.forest.append(None)
+			while k >= len(self._forest):
+				self._forest.append(None)
 				added_space = True
 
 			if added_space:
 				continue
 
-			curr = curr.merge(self.forest[k])
+			curr = curr.merge(self._forest[k])
 
 
-			self.forest[k] = None
+			self._forest[k] = None
 
 			k = curr.get_k()
 
 
-		self.forest[k] = curr
+		self._forest[k] = curr
 
 
 	def insert(self, item):
-		curr = Tree(item)
-		self.n += 1
+		'''
+		Inserts an item into the heap
 
-		self.insert_tree(curr)
+		:param item: the item to insert
+		'''
+		curr = _Tree(item)
+		self._n += 1
 
-		if self.min_heap is None or curr < self.min_heap:
-			self.min_heap = curr
+		self._insert_tree(curr)
+
+		if self._min_heap is None or curr < self._min_heap:
+			self._min_heap = curr
 
 	def pop(self):
-
-		if self.n <= 0:
+		'''
+		Removes and returns the smallest item from the heap
+	
+		:returns item: the smallest item in the heap
+		:raises Exception: if the heap is empty
+		'''
+		if self._n <= 0:
 			raise Exception("Cannot pop an empty BHeap!")
 
-		item = self.min_heap.item
-		self.n -= 1
+		item = self._min_heap.item
+		self._n -= 1
 
-		k = self.min_heap.get_k()
+		k = self._min_heap.get_k()
 
-		children = self.min_heap.children
+		children = self._min_heap.children
 
-		self.min_heap = None
-		self.forest[k] = None
+		self._min_heap = None
+		self._forest[k] = None
 
 
 		while children:
-			self.insert_tree(children.pop())
+			self._insert_tree(children.pop())
 
-		for tree in self.forest:
+		for tree in self._forest:
 			if tree is not None:
-				if self.min_heap is None or tree < self.min_heap:
-					self.min_heap = tree
+				if self._min_heap is None or tree < self._min_heap:
+					self._min_heap = tree
 
 		return item
 
 
 	def __bool__(self):
-		return self.n > 0
-	# def __str__(self):
-	# 	return str(self.forest)
+		return self._n > 0
+
 
 
 
@@ -142,7 +170,7 @@ def main():
 				a = set([random.randint(-n, n) for x in range(n)])
 				b = BHeap(a)
 
-				if min(a) != b.min_heap.item:
+				if min(a) != b._min_heap.item:
 					print(f"Adding {a=} and we have {b=}")
 					raise Exception(f"{n=} {x=} provides us the wrong minimum! We found {b=} instead of {min(a)}")
 
@@ -161,7 +189,7 @@ def main():
 			if a != s:
 				raise Exception("{x=} causes an error!")
 
-	# insert_test()
+	insert_test()
 	sort_test()
 
 

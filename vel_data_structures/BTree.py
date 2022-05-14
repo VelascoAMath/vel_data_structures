@@ -1,9 +1,23 @@
+'''
+A multiset that's implemented by using a B-tree
+https://en.wikipedia.org/wiki/B-tree
+
+@author: Alfredo Velasco
+'''
+
 from dataclasses import dataclass, field
 import random
 import os
 from tqdm.auto import trange
 
 def get_insertion_index(item, l):
+	'''
+	Returns the position where item should be inserted so that l stays sorted
+
+	:param item: the item to insert
+	:param l: the list where item could be inserted
+	:retun index: the index where item would be inserted
+	'''
 	if len(l) == 0 or item < l[0]:
 		return 0
 
@@ -19,11 +33,19 @@ def get_insertion_index(item, l):
 
 
 def insert_into_list(item, l):
+	'''
+	Inserts item into l in a position that keeps l sorted
+
+	:param item: the item to insert
+	:param l: the list where item will be inserted
+	'''
 	l.insert(get_insertion_index(item, l), item)
 
 @dataclass(order=True)
 class _Node(object):
-	"""docstring for _Node"""
+	"""
+	A node in the AVL tree
+	"""
 
 	num_list: list = field(default_factory=list)
 	children: list = field(default_factory=list)
@@ -67,20 +89,30 @@ class _Node(object):
 
 @dataclass
 class BTree(object):
-	"""docstring for BTree"""
+	"""
+	A multiset that's implemented using a B-tree
+	"""
 
-	b: int = 3
-	root: _Node = None
+	# The degree of the tree
+	_b: int = 3
+	# The root of the tree
+	_root: _Node = None
 	
 	def __post_init__(self):
-		if self.b < 2:
-			raise Exception(f"Invalid {self.b=} specified! It must be at least 2!")
+		if self._b < 2:
+			raise Exception(f"Invalid {self._b=} specified! It must be at least 2!")
 
-		self.root = _Node()
+		self._root = _Node()
 		self.n = 0
 
 	def add(self, item):
-		root = self.root
+		'''
+		Adds an item to the tree
+
+		:param item: the item to insert
+		'''
+
+		root = self._root
 		curr = root
 		visited_list = [root]
 		while not curr.is_leaf():
@@ -89,19 +121,25 @@ class BTree(object):
 
 		curr.add(item)
 
-		if len(curr.num_list) > self.b:
-			self.rebalance(visited_list)
+		if len(curr.num_list) > self._b:
+			self._rebalance(visited_list)
 		self.n += 1
 
-	def rebalance(self, visited_list):
-		if visited_list[0] is not self.root:
+	def _rebalance(self, visited_list):
+		'''
+		Rebalances the tree along the visited_list path
+
+		:param list(_Node) visited_list: the list of nodes visited during an insertion/deletion
+		'''
+
+		if visited_list[0] is not self._root:
 			raise Exception(f"This {visited_list=} should have the root as the first element!")
 
-		while visited_list and len(visited_list[-1]) > self.b:
+		while visited_list and len(visited_list[-1]) > self._b:
 			curr = visited_list[-1]
 			new_node = _Node()
 
-			for i in range(self.b // 2):
+			for i in range(self._b // 2):
 				new_node.add(curr.pop())
 
 			if not curr.is_leaf():
@@ -110,9 +148,9 @@ class BTree(object):
 
 
 			parent = None
-			if curr is self.root:
+			if curr is self._root:
 				parent = _Node()
-				self.root = parent
+				self._root = parent
 				parent._add_child(curr)
 			else:
 				parent = visited_list[-2]
@@ -127,8 +165,8 @@ class BTree(object):
 
 		while visited_list and len(visited_list[-1]) == 0:
 			curr = visited_list[-1]
-			if curr is self.root:
-				self.root = curr.children[0]
+			if curr is self._root:
+				self._root = curr.children[0]
 				return
 			parent = visited_list[-2]
 
@@ -169,9 +207,19 @@ class BTree(object):
 
 
 	def remove(self, item):
-		curr = self.root
-		visited_list = [self.root]
+		'''
+		Removes item from the multiset
+	
+		:param item: the item to remove
+		:raises Exception: if item is not in the tree
+		'''
+
+		curr = self._root
+		visited_list = [self._root]
 		while item not in curr:
+			if curr is None or len(curr.children) == 0:
+				raise Exception(f"Item {item} is not in the tree!")
+
 			curr = curr.children[get_insertion_index(item, curr.num_list)]
 			visited_list.append(curr)
 
@@ -191,7 +239,7 @@ class BTree(object):
 
 		self.n -= 1
 		if len(visited_list[-1]) == 0 and self.n > 0:
-			self.rebalance(visited_list)
+			self._rebalance(visited_list)
 
 
 
@@ -204,7 +252,9 @@ class BTree(object):
 	def to_dot(self, f_name):
 		'''
 		This method writes out the AVL to a .dot file so that it can be visualized by graphviz
-		param: f_name - the name of the files
+
+		:param str f_name: the name of the file where the output will be printed
+		:raises Exception: if f_name has a non .dot extension
 		'''
 
 		filen, file_ext = os.path.splitext(f_name)
@@ -221,11 +271,11 @@ class BTree(object):
 			f.write('layout=dot\n')
 			f.write('rankdir=UD\n')
 
-			if self.root is not None:
+			if self._root is not None:
 				node_to_index = {}
 				index = 0
 				discovered = set()
-				stack = [self.root]
+				stack = [self._root]
 
 				while stack:
 					node = stack.pop()
@@ -268,17 +318,13 @@ def main():
 	for n in trange(2, 20, desc='Size loop'):
 		for x in trange(1000, desc='Random loop'):
 			a = BTree(n)
-			l = list(range(10000))
+			l = list(range(1000))
 			random.seed(x)
 			random.shuffle(l)
-			# print(l)
 			for i in l:
 				a.add(i)
-				# print(a)
 			for i in l:
 				a.remove(i)
-				# print(a)
-			# a.to_dot(str(len(a)))
 
 
 if __name__ == '__main__':
