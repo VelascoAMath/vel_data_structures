@@ -4,7 +4,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='Velasco\' Python Structures',
+    # name='Velasco\' Python Structures',
+    name='vel_data_structures',
     version='1.0.0',
     author='Alfredo Velasco',
     author_email='avelasco@princeton.edu',
