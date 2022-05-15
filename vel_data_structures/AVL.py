@@ -60,6 +60,7 @@ class AVL(object):
 		super(AVL, self).__init__()
 		self._n = 0
 		self._root = None
+		self.traversed_node_list = []
 
 	def add(self, item):
 		'''
@@ -68,31 +69,22 @@ class AVL(object):
 		:param item: The item to be inserted
 		'''
 		if self._n == 0:
-			self._n += 1
 			self._root = _Node(item)
 		else:
-			curr = self._root
-			traversed_node_list = []
+			self._find_insertion_point(item)
+			
+			curr = self.traversed_node_list[-1]
 
-			# Generic BST insertion
-			while True:
-				traversed_node_list.append(curr)
-				if item < curr.item:
-					if curr.left is None:
-						curr.left = _Node(item)
-						self._n += 1
-						self._fix_heights(traversed_node_list)
-						return
-					else:
-						curr = curr.left
-				else:
-					if curr.right is None:
-						curr.right = _Node(item)
-						self._n += 1
-						self._fix_heights(traversed_node_list)
-						return
-					else:
-						curr = curr.right
+			if item <= curr.item and curr.left is None:
+				curr.left = _Node(item=item)
+			elif curr.item <= item and curr.right is None:
+				curr.right = _Node(item=item)
+			else:
+				raise Exception(f"{self=} {item=}\nI didn't think about this!")
+
+			self._fix_heights(self.traversed_node_list)
+		
+		self._n += 1
 
 
 	def remove(self, item):
@@ -110,34 +102,99 @@ class AVL(object):
 			self._n = 0
 			return
 
-		curr = self._root
-		curr_parent = None
-		traversed_node_list = []
-		while True:
-			if curr is None:
-				raise KeyError(f"{item=} is not in the tree!")
+		self._find_deletion_point(item)
+		curr = self.traversed_node_list[-1]
+		self.traversed_node_list.pop()
+		if self.traversed_node_list:
+			curr_parent = self.traversed_node_list[-1]
+		else:
+			curr_parent = None
 
-			traversed_node_list.append(curr)
-
-			if curr.item == item:
-				break
-			elif item < curr.item:
-				curr_parent = curr
-				curr = curr.left
-			elif curr.item < item:
-				curr_parent = curr
-				curr = curr.right
-
-		traversed_node_list.pop()
-		self.__remove_node(curr, curr_parent, traversed_node_list)
-		self._fix_heights(traversed_node_list)
+		self.__remove_node(curr, curr_parent)
+		self._fix_heights(self.traversed_node_list)
 		self._n -= 1
 
 
+	def _find_insertion_point(self, item):
 
-	def __remove_node(self, node, parent, traversed_node_list=None):
 		'''
-		A method to the node and pass its value to the parent
+		This fills the traversed_node_list with a path from the root to a node whose child would contain the item
+	
+		:param item: the item to insert
+		'''
+
+		curr = self._root
+		self.traversed_node_list = []
+
+		# Generic BST insertion
+		while True:
+			self.traversed_node_list.append(curr)
+			if item < curr.item:
+				if curr.left is None:
+					return
+				else:
+					curr = curr.left
+			elif item > curr.item:
+				if curr.right is None:
+					return
+				else:
+					curr = curr.right
+			# curr is identical to item
+			else:
+				# If we have one empty child
+				if curr.left is None or curr.right is None:
+					return
+				# Otherwise, go where the tree is less balanced
+				else:
+					#  Tree is right heavy
+					if curr.balance >= 0:
+						curr = curr.left
+					else:
+						curr = curr.right
+
+
+
+
+	def _find_deletion_point(self, item):
+
+		'''
+		This fills the traversed_node_list with a path from the root to a node whose child would contain the item
+	
+		:param item: the item to insert
+		'''
+
+		curr = self._root
+		self.traversed_node_list = []
+
+		# Generic BST insertion
+		while True:
+			self.traversed_node_list.append(curr)
+			if item < curr.item:
+				if curr.left is None:
+					return
+				else:
+					curr = curr.left
+			elif item > curr.item:
+				if curr.right is None:
+					return
+				else:
+					curr = curr.right
+			else:
+				if curr.left is None and curr.right is None:
+					return
+				elif curr.left is None and curr.right == item:
+					curr = curr.right
+				elif curr.right is None and curr.left == item:
+					curr = curr.left
+				else:
+					return
+
+
+	def __remove_node(self, node, parent):
+		'''
+		A method to the node and pass its value to the parent.
+		This is the same as a delete operation in a BST
+
 		:param node: The node we want to delete
 		:param parent: The parent node of node
 		:raises Exception: if node isn't a _Node or the parent is None
@@ -153,8 +210,8 @@ class AVL(object):
 			raise Exception(f"The parent is None!")
 
 
-		if traversed_node_list is None:
-			traversed_node_list = []
+		if self.traversed_node_list is None:
+			self.traversed_node_list = []
 
 
 		# Case 1: node is leaf
@@ -167,27 +224,27 @@ class AVL(object):
 				raise Exception(f"{parent=} isn't a parent of {node=}!")
 		# Get smallest element that's bigger than item
 		elif node.right is not None:
-			traversed_node_list.append(node)
+			self.traversed_node_list.append(node)
 			curr_parent = node
 			curr = node.right
 			while curr.left is not None:
-				traversed_node_list.append(curr)
+				self.traversed_node_list.append(curr)
 				curr_parent = curr
 				curr = curr.left
 
 			node.item = curr.item
-			self.__remove_node(curr, curr_parent, traversed_node_list)
+			self.__remove_node(curr, curr_parent)
 		elif node.left is not None:
-			traversed_node_list.append(node)
+			self.traversed_node_list.append(node)
 			curr_parent = node
 			curr = node.left
 			while curr.right is not None:
-				traversed_node_list.append(curr)
+				self.traversed_node_list.append(curr)
 				curr_parent = curr
 				curr = curr.right
 
 			node.item = curr.item
-			self.__remove_node(curr, curr_parent, traversed_node_list)
+			self.__remove_node(curr, curr_parent)
 
 
 
@@ -380,7 +437,7 @@ class AVL(object):
 
 	def __contains__(self, item):
 		'''
-		Tells if you item is in the tree
+		Indicates if you item is in the tree
 
 		:param item: the item to find in the tree
 		:return bool:  if the item was found in the tree
@@ -388,17 +445,9 @@ class AVL(object):
 		if self._root is None:
 			return False
 
-		curr = self._root
-		while True:
-			if curr is None:
-				return False
-
-			if curr.item == item:
-				return True
-			elif item < curr.item:
-				curr = curr.left
-			else:
-				curr = curr.right
+		
+		self._find_deletion_point(item)
+		return self.traversed_node_list[-1].item == item
 
 
 	def __len__(self):
@@ -632,7 +681,7 @@ def main():
 
 	# Test the remove method
 	# 
-	for n in tqdm(itertools.chain(range(20), [50, 100]), desc='Size'):
+	for n in tqdm(list(itertools.chain(range(20), [50, 100])), desc='Size'):
 		for x in tqdm(range(10000), desc='Remove'):
 			t = AVL()
 			random.seed(x)
@@ -659,7 +708,7 @@ def main():
 	# Test the remove method
 	# 
 	for n in tqdm([1000, 10000], desc='Size'):
-		for x in tqdm(range(100000 // n), desc='Remove'):
+		for x in tqdm(range(1000 // n), desc='Remove'):
 			t = AVL()
 			random.seed(x)
 			a = set([random.randint(0, n) for x in range(n)])
