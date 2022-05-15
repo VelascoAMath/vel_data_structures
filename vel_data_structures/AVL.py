@@ -102,7 +102,8 @@ class AVL(object):
 			self._n = 0
 			return
 
-		self._find_deletion_point(item)
+		if not self.traversed_node_list or self.traversed_node_list[-1].item != item:
+			self._find_deletion_point(item)
 		curr = self.traversed_node_list[-1]
 		self.traversed_node_list.pop()
 		if self.traversed_node_list:
@@ -435,7 +436,8 @@ class AVL(object):
 		self._calculate_height(node)
 		self._calculate_balance(node)
 
-	def __contains__(self, item):
+
+	def contains(self, item):
 		'''
 		Indicates if you item is in the tree
 
@@ -445,9 +447,9 @@ class AVL(object):
 		if self._root is None:
 			return False
 
-		
 		self._find_deletion_point(item)
 		return self.traversed_node_list[-1].item == item
+
 
 
 	def __len__(self):
@@ -500,6 +502,12 @@ class AVL(object):
 					item = stack.pop()
 					yield item
 
+
+	def __contains__(self, item):
+		'''
+		Wrapper for the contains method
+		'''		
+		return self.contains(item)
 	def __iter__(self):
 		'''
 		A DFS iterator through the tree
