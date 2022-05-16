@@ -80,7 +80,7 @@ class AVL(object):
 			elif curr.item <= item and curr.right is None:
 				curr.right = _Node(item=item)
 			else:
-				raise Exception(f"{self=} {item=}\nI didn't think about this!")
+				raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
 
 			self._fix_heights(self.traversed_node_list)
 		

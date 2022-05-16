@@ -87,6 +87,8 @@ class AVL_Dict(AVL):
 			curr = self._root
 			traversed_node_list = []
 
+			
+
 			# Generic BST insertion
 			while True:
 				traversed_node_list.append(curr)
@@ -110,6 +112,24 @@ class AVL_Dict(AVL):
 					curr.item = key, val
 					# No need to balance since the structure is the same
 					return
+		# 	self._find_insertion_point( (key, val) )
+		# 	# self._find_deletion_point( (key, val) )
+		# 	curr = self.traversed_node_list[-1]
+		# 	print(f"{self=}")
+		# 	print(f"{key=} {val=} {curr=} {curr.left=} {curr.right=}")
+		# 	print(f"{self.traversed_node_list}")
+		# 	print()
+		# 	if curr.item[0] == key:
+		# 		curr.item = (key, val)
+		# 		return
+		# 	elif key < curr.item[0] and curr.left is None:
+		# 		curr.left = _Node(item=(key, val))
+		# 	elif curr.item[0] < key and curr.right is None:
+		# 		curr.right = _Node(item= (key, val) )
+		# 	else:
+		# 		raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
+		# 	self._fix_heights(self.traversed_node_list)
+		# self._n += 1
 
 	def remove(self, key):
 		'''
@@ -277,194 +297,6 @@ class AVL_Dict(AVL):
 
 		else:
 			return False
-
-	def _fix_heights(self, node_list):
-		'''
-		Balances all of the nodes in node_list
-		
-		:param list(_Node) node_list: list of nodes to adjust
-		'''
-		for i in range(1, len(node_list)):
-			if node_list[i - 1].left is not node_list[i] and node_list[i - 1].right is not node_list[i]:
-				raise Exception(f"Illegal node traversal! {node_list[i - 1]} is not the parent of {node_list[i]}!")
-
-		if node_list[0] is not self._root:
-			raise Exception(f"{node_list[0]=} is not the root!")
-
-		# Calculate the new heights
-		for i in range(len(node_list) - 1, -1, -1):
-			curr = node_list[i]
-			if i > 0:
-				self._fix_height(curr, node_list[i-1])
-			else:
-				self._fix_height(curr)
-
-
-	def _fix_height(self, node, parent=None):
-		'''
-		Balances the node so its balance factor is within [-1, 1]
-
-		:param _Node node: the node we'll balance
-		:param _Node parent: the parent of node
-		'''
-		self._calculate_height(node)
-		self._calculate_balance(node)
-		if node.balance == 2:
-			# Scenario 2
-			#    node
-			#    /  \
-			#        x1
-			#          \
-			#            x2
-			if node.right is not None and node.right.balance >= 0:
-				if node is self._root:
-					self._root = node.right
-				else:
-					if parent.right is node:
-						parent.right = node.right
-					elif parent.left is node:
-						parent.left = node.right
-					# else:
-					# 	raise Exception(f"Illegal node traversal! {parent} is not the parent of {node_list[i]}!")
-
-				temp = node.right
-				node.right = temp.left
-				temp.left = node
-				self._calculate_height_and_balance(node)
-				self._calculate_height_and_balance(temp.right)
-				self._calculate_height_and_balance(temp)
-			# Scenario 1
-			#    node
-			#    /  \
-			#        x1
-			#       /    
-			#      x3      
-			# elif node.right is not None and node.right.balance < 0:
-			else:
-				if node is self._root:
-					self._root = node.right.left
-				else:
-					if parent.left is node:
-						parent.left = node.right.left
-					elif parent.right is node:
-						parent.right = node.right.left
-					# else:
-					# 	raise Exception(f"Illegal node traversal! {parent} is not the parent of {node_list[i]}!")
-				temp = node.right.left
-				node.right.left = temp.right
-				temp.right = node.right
-				node.right = temp.left
-				temp.left = node
-				self._calculate_height_and_balance(temp.left)
-				self._calculate_height_and_balance(temp.right)
-				self._calculate_height_and_balance(temp)
-
-			# else:
-			# 	raise Exception(f"This node {node} has a perfectly balanced right child!")
-
-		if node.balance == -2:
-			# Scenario 4
-			#      node
-			#     /
-			#    x1
-			#    /
-			#   x2
-			if node.left is not None and node.left.balance <= 0:
-				if node is self._root:
-					self._root = node.left
-				else:
-					if parent.left is node:
-						parent.left = node.left
-					elif parent.right is node:
-						parent.right = node.left
-					# else:
-					# 	raise Exception(f"Illegal node traversal! {parent} is not the parent of {node_list[i]}!")
-
-				temp = node.left
-				node.left = temp.right
-				temp.right = node
-				self._calculate_height_and_balance(node)
-				self._calculate_height_and_balance(temp.left)
-				self._calculate_height_and_balance(temp)
-			# Scenario 3
-			#    node
-			#    /   
-			#   x1  
-			#     \       
-			#      x3   
-			else:
-				if node is self._root:
-					self._root = node.left.right
-				else:
-					if parent.left is node:
-						parent.left = node.left.right
-					elif parent.right is node:
-						parent.right = node.left.right
-					# else:
-					# 	raise Exception(f"Illegal node traversal! {parent} is not the parent of {node_list[i]}!")
-				temp = node.left.right
-				node.left.right = temp.left
-				temp.left = node.left
-				node.left = temp.right
-				temp.right = node
-				self._calculate_height_and_balance(temp.right)
-				self._calculate_height_and_balance(temp.left)
-				self._calculate_height_and_balance(temp)
-			# else:
-			# 	raise Exception(f"This node {node} has a perfectly balanced left child!")
-
-
-
-
-	def _calculate_height(self, node):
-		'''
-		Calculates the height of an inputted node
-		Note that this assumes that the children have the correct heights
-
-		:param _Node node: node whose height we'll calculate
-		'''
-		if node is None:
-			raise Exception("Can't calculate height on None!")
-		if not isinstance(node, _Node):
-			raise Exception(f"Passed in node must be _Node but is instead {type(node)}!")
-
-		if node.left is None:
-			lh = 0
-		else:
-			lh = node.left.height
-		if node.right is None:
-			rh = 0
-		else:
-			rh = node.right.height
-
-		node.height = max(1 + lh, 1 + rh)
-
-	def _calculate_balance(self, node):
-		'''
-		Calculates the balance of an inputted node
-		Note that this assumes that the children have the correct balances
-
-		:param _Node node: node whose balance we'll calculate
-		'''
-		if node is None:
-			raise Exception("Can't calculate balance on None!")
-		if not isinstance(node, _Node):
-			raise Exception(f"Passed in node must be _Node but is instead {type(node)}!")
-
-		if node.left is None:
-			lh = 0
-		else:
-			lh = node.left.height
-		if node.right is None:
-			rh = 0
-		else:
-			rh = node.right.height
-
-		node.balance = rh - lh
-
-	def _calculate_height_and_balance(self, node):
-		self._calculate_height(node)
-		self._calculate_balance(node)
 
 	def __contains__(self, key):
 		'''
