@@ -12,30 +12,31 @@ import random
 from tqdm import tqdm
 from tqdm.auto import trange
 from collections import deque
+from AVL import AVL, _Node
 
-@dataclass
-class _Node(object):
-	"""
-	A node for the AVL tree.
-	It holds a key-val pair
-	"""
 
-	key:     int = None
-	val:     int = None
-	height:  int = 1
-	# the balance factor
-	balance: int = 0
-	# The left child
-	left:    int = None
-	# The right child
-	right:   int = None
+# Our version of the _Node
+# class _Node(object):
+# 	"""
+# 	A node for the AVL tree.
+# 	It holds a key-val pair
+# 	"""
+#   # Holds a key-val tuple
+# 	item:    int = None 
+# 	height:  int = 1
+# 	# the balance factor
+# 	balance: int = 0
+# 	# The left child
+# 	left:    int = None
+# 	# The right child
+# 	right:   int = None
 
-	def __repr__(self):
-		return f"{self.key}:{self.val} {self.height=} {self.balance=}"
+# 	def __repr__(self):
+# 		return f"{self.key}:{self.val} {self.height=} {self.balance=}"
 
 
 # @dataclass
-class AVL_Dict(object):
+class AVL_Dict(AVL):
 	"""
 	A dictionary that uses an AVL tree
 	"""
@@ -52,7 +53,9 @@ class AVL_Dict(object):
 		:param dict items: dictionary to copy
 
 		'''
-		self.__post_init__()
+		super(AVL_Dict, self).__init__()
+		self._n = 0
+		self._root = None
 
 		if items is not None:
 			if isinstance(items, dict):
@@ -62,10 +65,6 @@ class AVL_Dict(object):
 				for (key, val) in items:
 					self.add(key, val)
 
-	def __post_init__(self):
-		super(AVL_Dict, self).__init__()
-		self._n = 0
-		self._root = None
 
 	def add(self, key, val):
 		'''
@@ -74,9 +73,16 @@ class AVL_Dict(object):
 		:param key: The key to be inserted
 		:param val: The value to which key maps
 		'''
+		# if self._n == 0:
+		# 	self._root = _Node( (key, val) )
+		# else:
+		# 	self._find_insertion_point( (key, val) )
+
+		# self._n += 1
+
 		if self._n == 0:
 			self._n += 1
-			self._root = _Node(key, val)
+			self._root = _Node(item=(key, val))
 		else:
 			curr = self._root
 			traversed_node_list = []
@@ -84,24 +90,24 @@ class AVL_Dict(object):
 			# Generic BST insertion
 			while True:
 				traversed_node_list.append(curr)
-				if key < curr.key:
+				if key < curr.item[0]:
 					if curr.left is None:
-						curr.left = _Node(key, val)
+						curr.left = _Node(item=(key, val))
 						self._n += 1
 						self._fix_heights(traversed_node_list)
 						return
 					else:
 						curr = curr.left
-				elif key > curr.key:
+				elif key > curr.item[0]:
 					if curr.right is None:
-						curr.right = _Node(key, val)
+						curr.right = _Node(item=(key, val))
 						self._n += 1
 						self._fix_heights(traversed_node_list)
 						return
 					else:
 						curr = curr.right
 				else:
-					curr.key, curr.val = key, val
+					curr.item = key, val
 					# No need to balance since the structure is the same
 					return
 
@@ -129,12 +135,12 @@ class AVL_Dict(object):
 
 			traversed_node_list.append(curr)
 
-			if curr.key == key:
+			if curr.item[0] == key:
 				break
-			elif key < curr.key:
+			elif key < curr.item[0]:
 				curr_parent = curr
 				curr = curr.left
-			elif curr.key < key:
+			elif curr.item[0] < key:
 				curr_parent = curr
 				curr = curr.right
 
@@ -186,8 +192,8 @@ class AVL_Dict(object):
 				curr_parent = curr
 				curr = curr.left
 
-			node.key = curr.key
-			node.val = curr.val
+			node.item = ( curr.item[0], curr.item[1] )
+
 			self.__remove_node(curr, curr_parent, traversed_node_list)
 		elif node.left is not None:
 			traversed_node_list.append(node)
@@ -198,8 +204,7 @@ class AVL_Dict(object):
 				curr_parent = curr
 				curr = curr.right
 
-			node.key = curr.key
-			node.val = curr.val
+			node.item = ( curr.item[0], curr.item[1] )
 			self.__remove_node(curr, curr_parent, traversed_node_list)
 
 
@@ -221,9 +226,9 @@ class AVL_Dict(object):
 			if curr is None:
 				raise KeyError(f"{key=} is not in the tree!")
 
-			if curr.key == key:
-				return curr.val
-			elif key < curr.key:
+			if curr.item[0] == key:
+				return curr.item[1]
+			elif key < curr.item[0]:
 				curr = curr.left
 			else:
 				curr = curr.right
@@ -475,9 +480,9 @@ class AVL_Dict(object):
 			if curr is None:
 				return False
 
-			if curr.key == key:
+			if curr.item[0] == key:
 				return True
-			elif key < curr.key:
+			elif key < curr.item[0]:
 				curr = curr.left
 			else:
 				curr = curr.right
@@ -533,12 +538,12 @@ class AVL_Dict(object):
 					stack.append(node.right)
 					if not inserted:
 						item = stack.pop(-2)
-						yield (item.key, item.val)
+						yield (item.item[0], item.item[1])
 					inserted = True
 
 				if not inserted:
 					item = stack.pop()
-					yield (item.key, item.val)
+					yield (item.item[0], item.item[1])
 
 	def __iter__(self):
 		'''
@@ -572,11 +577,11 @@ class AVL_Dict(object):
 			if not inserted_left and node.right is not None and id(node.right) not in self.discovered:
 				self.stack.append(node.right)
 				if not inserted:
-					return self.stack.pop(-2).key
+					return self.stack.pop(-2).item[0]
 				inserted = True
 
 			if not inserted:
-				return self.stack.pop().key
+				return self.stack.pop().item[0]
 
 		raise StopIteration
 
@@ -650,8 +655,8 @@ def main():
 	def random_insertion_test():
 		# Random insertions of lists
 		# We passed!
-		for n in trange(100, 101):
-			for x in tqdm(range(10000)):
+		for n in trange(100, 101, desc='Insertion size'):
+			for x in tqdm(range(10000), desc='Rand loop'):
 				t = AVL_Dict()
 				d = dict()
 				random.seed(x)
@@ -666,7 +671,7 @@ def main():
 	def random_duplicate_test():
 		# Random duplicates
 		# We passed!
-		for x in tqdm(range(10000)):
+		for x in tqdm(range(10000), desc='random duplicates'):
 			t = AVL_Dict()
 			random.seed(x)
 			l = [random.randint(1, 100) for x in range(1000)]
@@ -682,7 +687,7 @@ def main():
 	def contains_test():
 		# Check the contains
 		# We passed!
-		for x in tqdm(range(10000)):
+		for x in tqdm(range(10000), desc='contains_test'):
 			t = AVL_Dict()
 			random.seed(x)
 			s = set(random.sample(list(range(1000)), 100))
@@ -736,8 +741,8 @@ def main():
 
 	# Random deletions
 	def random_deletion_test():
-		for n in trange(0, 100):
-			for x in tqdm(range(1000)):
+		for n in trange(0, 100, desc='Random deletion'):
+			for x in tqdm(range(1000), desc='Rand loop'):
 				random.seed(x)
 				a = set([(random.randint(0, n), random.randint(0, n)) for x in range(n)])
 				t = AVL_Dict(a)
@@ -757,7 +762,7 @@ def main():
 
 	random_insertion_test()
 	contains_test()
-	pprint_test()
+	# pprint_test()
 	random_mapping_test()
 	random_deletion_test()
 
