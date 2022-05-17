@@ -1,4 +1,6 @@
 # https://stackoverflow.com/a/15833780
+print("Hey! Why aren't you working!!!")
+
 import inspect, testpkg
 print(inspect.getmembers(testpkg, inspect.ismodule))
 
