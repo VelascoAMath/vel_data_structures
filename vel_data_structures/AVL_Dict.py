@@ -22,9 +22,6 @@ class _KeyVal(object):
 	def __lt__(self, other):
 		return self.key < other.key
 
-	def __eq__(self, other):
-		return self.key == other.key
-
 
 
 @dataclass
