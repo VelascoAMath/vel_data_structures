@@ -1,5 +1,11 @@
+# https://stackoverflow.com/a/44230992
+import os
 import sys
-print (sys.path)
+
+file_dir = os.path.dirname(__file__)
+sys.path.append(file_dir)
+
+
 
 
 
