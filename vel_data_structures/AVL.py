@@ -508,6 +508,7 @@ class AVL(object):
 		Wrapper for the contains method
 		'''		
 		return self.contains(item)
+	
 	def __iter__(self):
 		'''
 		A DFS iterator through the tree

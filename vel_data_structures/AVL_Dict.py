@@ -14,28 +14,20 @@ from tqdm.auto import trange
 from collections import deque
 from AVL import AVL, _Node
 
+@dataclass
+class _KeyVal(object):
+	key: int = 0
+	val: int = 0
 
-# Our version of the _Node
-# class _Node(object):
-# 	"""
-# 	A node for the AVL tree.
-# 	It holds a key-val pair
-# 	"""
-#   # Holds a key-val tuple
-# 	item:    int = None 
-# 	height:  int = 1
-# 	# the balance factor
-# 	balance: int = 0
-# 	# The left child
-# 	left:    int = None
-# 	# The right child
-# 	right:   int = None
+	def __lt__(self, other):
+		return self.key < other.key
 
-# 	def __repr__(self):
-# 		return f"{self.key}:{self.val} {self.height=} {self.balance=}"
+	def __eq__(self, other):
+		return self.key == other.key
 
 
-# @dataclass
+
+@dataclass
 class AVL_Dict(AVL):
 	"""
 	A dictionary that uses an AVL tree
@@ -73,63 +65,27 @@ class AVL_Dict(AVL):
 		:param key: The key to be inserted
 		:param val: The value to which key maps
 		'''
-		# if self._n == 0:
-		# 	self._root = _Node( (key, val) )
-		# else:
-		# 	self._find_insertion_point( (key, val) )
-
-		# self._n += 1
-
 		if self._n == 0:
-			self._n += 1
-			self._root = _Node(item=(key, val))
+			self._root = _Node( _KeyVal(key, val) )
 		else:
-			curr = self._root
-			traversed_node_list = []
+			self._find_deletion_point( _KeyVal(key, val) )
+			curr = self.traversed_node_list[-1]
+			# print(f"{self=}")
+			# print(f"{key=} {val=} {curr=} {curr.left=} {curr.right=}")
+			# print(f"{self.traversed_node_list}")
+			# print()
+			if curr.item.key == key:
+				curr.item = _KeyVal(key, val)
+				return
+			elif key < curr.item.key and curr.left is None:
+				curr.left = _Node(item=_KeyVal(key, val))
+			elif curr.item.key < key and curr.right is None:
+				curr.right = _Node(item=_KeyVal(key, val) )
+			else:
+				raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
+			self._fix_heights(self.traversed_node_list)
+		self._n += 1
 
-			
-
-			# Generic BST insertion
-			while True:
-				traversed_node_list.append(curr)
-				if key < curr.item[0]:
-					if curr.left is None:
-						curr.left = _Node(item=(key, val))
-						self._n += 1
-						self._fix_heights(traversed_node_list)
-						return
-					else:
-						curr = curr.left
-				elif key > curr.item[0]:
-					if curr.right is None:
-						curr.right = _Node(item=(key, val))
-						self._n += 1
-						self._fix_heights(traversed_node_list)
-						return
-					else:
-						curr = curr.right
-				else:
-					curr.item = key, val
-					# No need to balance since the structure is the same
-					return
-		# 	self._find_insertion_point( (key, val) )
-		# 	# self._find_deletion_point( (key, val) )
-		# 	curr = self.traversed_node_list[-1]
-		# 	print(f"{self=}")
-		# 	print(f"{key=} {val=} {curr=} {curr.left=} {curr.right=}")
-		# 	print(f"{self.traversed_node_list}")
-		# 	print()
-		# 	if curr.item[0] == key:
-		# 		curr.item = (key, val)
-		# 		return
-		# 	elif key < curr.item[0] and curr.left is None:
-		# 		curr.left = _Node(item=(key, val))
-		# 	elif curr.item[0] < key and curr.right is None:
-		# 		curr.right = _Node(item= (key, val) )
-		# 	else:
-		# 		raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
-		# 	self._fix_heights(self.traversed_node_list)
-		# self._n += 1
 
 	def remove(self, key):
 		'''
@@ -155,12 +111,12 @@ class AVL_Dict(AVL):
 
 			traversed_node_list.append(curr)
 
-			if curr.item[0] == key:
+			if curr.item.key == key:
 				break
-			elif key < curr.item[0]:
+			elif key < curr.item.key:
 				curr_parent = curr
 				curr = curr.left
-			elif curr.item[0] < key:
+			elif curr.item.key < key:
 				curr_parent = curr
 				curr = curr.right
 
@@ -212,7 +168,7 @@ class AVL_Dict(AVL):
 				curr_parent = curr
 				curr = curr.left
 
-			node.item = ( curr.item[0], curr.item[1] )
+			node.item = curr.item
 
 			self.__remove_node(curr, curr_parent, traversed_node_list)
 		elif node.left is not None:
@@ -224,7 +180,7 @@ class AVL_Dict(AVL):
 				curr_parent = curr
 				curr = curr.right
 
-			node.item = ( curr.item[0], curr.item[1] )
+			node.item = curr.item
 			self.__remove_node(curr, curr_parent, traversed_node_list)
 
 
@@ -246,9 +202,9 @@ class AVL_Dict(AVL):
 			if curr is None:
 				raise KeyError(f"{key=} is not in the tree!")
 
-			if curr.item[0] == key:
-				return curr.item[1]
-			elif key < curr.item[0]:
+			if curr.item.key == key:
+				return curr.item.val
+			elif key < curr.item.key:
 				curr = curr.left
 			else:
 				curr = curr.right
@@ -312,9 +268,9 @@ class AVL_Dict(AVL):
 			if curr is None:
 				return False
 
-			if curr.item[0] == key:
+			if curr.item.key == key:
 				return True
-			elif key < curr.item[0]:
+			elif key < curr.item.key:
 				curr = curr.left
 			else:
 				curr = curr.right
@@ -370,12 +326,12 @@ class AVL_Dict(AVL):
 					stack.append(node.right)
 					if not inserted:
 						item = stack.pop(-2)
-						yield (item.item[0], item.item[1])
+						yield (item.item.key, item.item.val)
 					inserted = True
 
 				if not inserted:
 					item = stack.pop()
-					yield (item.item[0], item.item[1])
+					yield (item.item.key, item.item.val)
 
 	def __iter__(self):
 		'''
@@ -409,11 +365,11 @@ class AVL_Dict(AVL):
 			if not inserted_left and node.right is not None and id(node.right) not in self.discovered:
 				self.stack.append(node.right)
 				if not inserted:
-					return self.stack.pop(-2).item[0]
+					return self.stack.pop(-2).item.key
 				inserted = True
 
 			if not inserted:
-				return self.stack.pop().item[0]
+				return self.stack.pop().item.key
 
 		raise StopIteration
 
