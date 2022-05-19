@@ -14,7 +14,7 @@ from tqdm.auto import trange
 from collections import deque
 from AVL import AVL, _Node
 
-@dataclass
+@dataclass(eq=False, order=False)
 class _KeyVal(object):
 	key: int = 0
 	val: int = 0
@@ -30,9 +30,6 @@ class AVL_Dict(AVL):
 	A dictionary that uses an AVL tree
 	"""
 
-	_n: int = 0
-	_root: _Node = None
-
 	def __init__(self, items=None):
 		'''
 		
@@ -43,8 +40,6 @@ class AVL_Dict(AVL):
 
 		'''
 		super(AVL_Dict, self).__init__()
-		self._n = 0
-		self._root = None
 
 		if items is not None:
 			if isinstance(items, dict):
@@ -101,12 +96,12 @@ class AVL_Dict(AVL):
 
 		curr = self._root
 		curr_parent = None
-		traversed_node_list = []
+		self.traversed_node_list = []
 		while True:
 			if curr is None:
 				raise KeyError(f"{item=} is not in the tree!")
 
-			traversed_node_list.append(curr)
+			self.traversed_node_list.append(curr)
 
 			if curr.item.key == key:
 				break
@@ -117,71 +112,10 @@ class AVL_Dict(AVL):
 				curr_parent = curr
 				curr = curr.right
 
-		traversed_node_list.pop()
-		self.__remove_node(curr, curr_parent, traversed_node_list)
-		self._fix_heights(traversed_node_list)
+		self.traversed_node_list.pop()
+		self._remove_node(curr, curr_parent)
+		self._fix_heights(self.traversed_node_list)
 		self._n -= 1
-
-
-
-	def __remove_node(self, node, parent, traversed_node_list=None):
-		'''
-		A method to the node and pass its value to the parent
-
-		:param node: The node we want to delete
-		:param parent: The parent node of node
-		:raises Exception: if the node is not a _Node or the parent is None
-		'''
-		if not isinstance(node, _Node):
-			raise Exception(f"The node must be of type _Node but is instead {type(node)}")
-
-
-		if node is None:
-			raise Exception(f"The node is None!")
-
-		if parent is None and node is not self._root:
-			raise Exception(f"The parent is None!")
-
-
-		if traversed_node_list is None:
-			traversed_node_list = []
-
-
-		# Case 1: node is leaf
-		if node.height == 1:
-			if parent.left is node:
-				parent.left = None
-			elif parent.right is node:
-				parent.right = None
-			else:
-				raise Exception(f"{parent=} isn't a parent of {node=}!")
-		# Get smallest element that's bigger than item
-		elif node.right is not None:
-			traversed_node_list.append(node)
-			curr_parent = node
-			curr = node.right
-			while curr.left is not None:
-				traversed_node_list.append(curr)
-				curr_parent = curr
-				curr = curr.left
-
-			node.item = curr.item
-
-			self.__remove_node(curr, curr_parent, traversed_node_list)
-		elif node.left is not None:
-			traversed_node_list.append(node)
-			curr_parent = node
-			curr = node.left
-			while curr.right is not None:
-				traversed_node_list.append(curr)
-				curr_parent = curr
-				curr = curr.right
-
-			node.item = curr.item
-			self.__remove_node(curr, curr_parent, traversed_node_list)
-
-
-
 
 
 	def get(self, key):
@@ -206,12 +140,6 @@ class AVL_Dict(AVL):
 			else:
 				curr = curr.right
 
-	def clear(self):
-		'''
-		Deletes all of the items in the tree
-		'''
-		self._root = None
-		self._n = 0
 
 	def __setitem__(self, key, val):
 		'''
@@ -231,6 +159,7 @@ class AVL_Dict(AVL):
 		Wrappper for the remove method
 		'''
 		self.remove(key)
+		# self.remove(_KeyVal(key, 0))
 
 	def __eq__(self, other):
 		'''
@@ -272,13 +201,6 @@ class AVL_Dict(AVL):
 			else:
 				curr = curr.right
 
-
-	def __len__(self):
-		'''
-		Returns the number of items in the tree
-		return: int - the number of items in the tree
-		'''
-		return self._n
 
 	def keys_yield(self):
 		'''
@@ -330,16 +252,6 @@ class AVL_Dict(AVL):
 					item = stack.pop()
 					yield (item.item.key, item.item.val)
 
-	def __iter__(self):
-		'''
-		A DFS iterator through the tree
-		'''
-		self.discovered = set()
-		if self._root is None:
-			self.stack = []
-		else:
-			self.stack = [self._root]
-		return self
 
 	def __next__(self):
 		while self.stack:
@@ -370,25 +282,6 @@ class AVL_Dict(AVL):
 
 		raise StopIteration
 
-	def __dfs_str__(self, node=None):
-		'''
-		A DFS string representation of the AVL_Dict
-
-		:returns str result: the string representation of the AVL_Dict
-		'''
-		if node is None:
-			return ''
-
-		result = node.__repr__()
-
-
-		if node.left is not None:
-			result += f", L({self.__dfs_str__(node.left)})"
-		if node.right is not None:
-			result += f", R({self.__dfs_str__(node.right)})"
-
-
-		return result
 
 	def __repr__(self):
 		'''
@@ -413,26 +306,6 @@ class AVL_Dict(AVL):
 		result += '}'
 		return result
 
-	def _verify_itself(self, node=None):
-		'''
-		Verifies that the tree is balanced
-		Should not be called by users
-		'''
-		if node is None:
-			node = self._root
-		if self._root is None:
-			return
-
-		self._calculate_height_and_balance(node)
-		if node.balance < -1 or node.balance > 1:
-			raise Exception(f"{node} is a rule breaker!")
-
-		if node.left is not None:
-			self._verify_itself(node.left)
-		if node.right is not None:
-			self._verify_itself(node.right)
-
-
 
 
 def main():
@@ -440,9 +313,10 @@ def main():
 	def random_insertion_test():
 		# Random insertions of lists
 		# We passed!
+		t = AVL_Dict()
 		for n in trange(100, 101, desc='Insertion size'):
 			for x in tqdm(range(10000), desc='Rand loop'):
-				t = AVL_Dict()
+				t.clear()
 				d = dict()
 				random.seed(x)
 				a = set([(random.randint(0, n), random.randint(0, n)) for x in range(n)])
@@ -456,8 +330,9 @@ def main():
 	def random_duplicate_test():
 		# Random duplicates
 		# We passed!
+		t = AVL_Dict()
 		for x in tqdm(range(10000), desc='random duplicates'):
-			t = AVL_Dict()
+			t.clear()
 			random.seed(x)
 			l = [random.randint(1, 100) for x in range(1000)]
 			s = set(l)
@@ -472,8 +347,9 @@ def main():
 	def contains_test():
 		# Check the contains
 		# We passed!
+		t = AVL_Dict()
 		for x in tqdm(range(10000), desc='contains_test'):
-			t = AVL_Dict()
+			t.clear()
 			random.seed(x)
 			s = set(random.sample(list(range(1000)), 100))
 			c = set(range(1000)) - s
@@ -489,8 +365,9 @@ def main():
 	
 	def pprint_test():
 		# Check the pprint
+		t = AVL_Dict()
 		for n in range(20):
-			t = AVL_Dict()
+			t.clear()
 			s = {}
 			for x in range(n):
 				t[x] = x + 1
@@ -499,6 +376,8 @@ def main():
 			pprint(s)
 			print(t)
 			print(s)
+			print(f"{t=}")
+			print(f"{s=}")
 			print()
 		for x in t:
 			print(x)
@@ -547,9 +426,9 @@ def main():
 
 	random_insertion_test()
 	contains_test()
-	# pprint_test()
 	random_mapping_test()
 	random_deletion_test()
+	pprint_test()
 
 
 
