@@ -111,7 +111,7 @@ class AVL(object):
 		else:
 			curr_parent = None
 
-		self.__remove_node(curr, curr_parent)
+		self._remove_node(curr, curr_parent)
 		self._fix_heights(self.traversed_node_list)
 		self._n -= 1
 
@@ -161,7 +161,7 @@ class AVL(object):
 		'''
 		This fills the traversed_node_list with a path from the root to a node whose child would contain the item
 	
-		:param item: the item to insert
+		:param item: the item to remove
 		'''
 
 		curr = self._root
@@ -191,7 +191,7 @@ class AVL(object):
 					return
 
 
-	def __remove_node(self, node, parent):
+	def _remove_node(self, node, parent):
 		'''
 		A method to the node and pass its value to the parent.
 		This is the same as a delete operation in a BST
@@ -234,7 +234,7 @@ class AVL(object):
 				curr = curr.left
 
 			node.item = curr.item
-			self.__remove_node(curr, curr_parent)
+			self._remove_node(curr, curr_parent)
 		elif node.left is not None:
 			self.traversed_node_list.append(node)
 			curr_parent = node
@@ -245,7 +245,7 @@ class AVL(object):
 				curr = curr.right
 
 			node.item = curr.item
-			self.__remove_node(curr, curr_parent)
+			self._remove_node(curr, curr_parent)
 
 
 
@@ -449,6 +449,13 @@ class AVL(object):
 
 		self._find_deletion_point(item)
 		return self.traversed_node_list[-1].item == item
+
+	def clear(self):
+		'''
+		Deletes all of the items in the tree
+		'''
+		self._root = None
+		self._n = 0
 
 
 
@@ -691,8 +698,9 @@ def main():
 	# Test the remove method
 	# 
 	for n in tqdm(list(itertools.chain(range(20), [50, 100])), desc='Size'):
+		t = AVL()
 		for x in tqdm(range(10000), desc='Remove'):
-			t = AVL()
+			t.clear()
 			random.seed(x)
 			a = set([random.randint(0, n) for x in range(n)])
 			b = set([random.randint(0, n) for x in range(n)])
@@ -717,8 +725,9 @@ def main():
 	# Test the remove method
 	# 
 	for n in tqdm([1000, 10000], desc='Size'):
+		t = AVL()
 		for x in tqdm(range(1000 // n), desc='Remove'):
-			t = AVL()
+			t.clear()
 			random.seed(x)
 			a = set([random.randint(0, n) for x in range(n)])
 			b = set([random.randint(0, n) for x in range(n)])
