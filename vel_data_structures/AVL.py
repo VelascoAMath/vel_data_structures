@@ -183,9 +183,9 @@ class AVL(object):
 			else:
 				if curr.left is None and curr.right is None:
 					return
-				elif curr.left is None and curr.right == item:
+				elif curr.left is None and curr.right.item == item:
 					curr = curr.right
-				elif curr.right is None and curr.left == item:
+				elif curr.right is None and curr.left.item == item:
 					curr = curr.left
 				else:
 					return
