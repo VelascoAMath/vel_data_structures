@@ -60,7 +60,7 @@ class AVL(object):
 		super(AVL, self).__init__()
 		self._n = 0
 		self._root = None
-		self.traversed_node_list = []
+		self._traversed_node_list = []
 
 	def add(self, item):
 		'''
@@ -73,7 +73,7 @@ class AVL(object):
 		else:
 			self._find_insertion_point(item)
 			
-			curr = self.traversed_node_list[-1]
+			curr = self._traversed_node_list[-1]
 
 			if item <= curr.item and curr.left is None:
 				curr.left = _Node(item=item)
@@ -82,7 +82,7 @@ class AVL(object):
 			else:
 				raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
 
-			self._fix_heights(self.traversed_node_list)
+			self._fix_heights(self._traversed_node_list)
 		
 		self._n += 1
 
@@ -102,19 +102,19 @@ class AVL(object):
 			self._n = 0
 			return
 
-		if not self.traversed_node_list or self.traversed_node_list[-1].item != item:
+		if not self._traversed_node_list or self._traversed_node_list[-1].item != item:
 			self._find_deletion_point(item)
-		curr = self.traversed_node_list[-1]
-		self.traversed_node_list.pop()
-		if self.traversed_node_list:
-			curr_parent = self.traversed_node_list[-1]
+		curr = self._traversed_node_list[-1]
+		self._traversed_node_list.pop()
+		if self._traversed_node_list:
+			curr_parent = self._traversed_node_list[-1]
 		else:
 			curr_parent = None
 
 		self._remove_node(curr, curr_parent)
-		self._fix_heights(self.traversed_node_list)
+		self._fix_heights(self._traversed_node_list)
 		self._n -= 1
-		self.traversed_node_list = []
+		self._traversed_node_list = []
 
 
 	def _find_insertion_point(self, item):
@@ -126,11 +126,11 @@ class AVL(object):
 		'''
 
 		curr = self._root
-		self.traversed_node_list = []
+		self._traversed_node_list = []
 
 		# Generic BST insertion
 		while True:
-			self.traversed_node_list.append(curr)
+			self._traversed_node_list.append(curr)
 			if item < curr.item:
 				if curr.left is None:
 					return
@@ -166,11 +166,11 @@ class AVL(object):
 		'''
 
 		curr = self._root
-		self.traversed_node_list = []
+		self._traversed_node_list = []
 
 		# Generic BST insertion
 		while True:
-			self.traversed_node_list.append(curr)
+			self._traversed_node_list.append(curr)
 			if item < curr.item:
 				if curr.left is None:
 					return
@@ -212,8 +212,8 @@ class AVL(object):
 			raise Exception(f"The parent is None!")
 
 
-		if self.traversed_node_list is None:
-			self.traversed_node_list = []
+		if self._traversed_node_list is None:
+			self._traversed_node_list = []
 
 
 		# Case 1: node is leaf
@@ -226,22 +226,22 @@ class AVL(object):
 				raise Exception(f"{parent=} isn't a parent of {node=}!")
 		# Get smallest element that's bigger than item
 		elif node.right is not None:
-			self.traversed_node_list.append(node)
+			self._traversed_node_list.append(node)
 			curr_parent = node
 			curr = node.right
 			while curr.left is not None:
-				self.traversed_node_list.append(curr)
+				self._traversed_node_list.append(curr)
 				curr_parent = curr
 				curr = curr.left
 
 			node.item = curr.item
 			self._remove_node(curr, curr_parent)
 		elif node.left is not None:
-			self.traversed_node_list.append(node)
+			self._traversed_node_list.append(node)
 			curr_parent = node
 			curr = node.left
 			while curr.right is not None:
-				self.traversed_node_list.append(curr)
+				self._traversed_node_list.append(curr)
 				curr_parent = curr
 				curr = curr.right
 
@@ -449,7 +449,7 @@ class AVL(object):
 			return False
 
 		self._find_deletion_point(item)
-		return self.traversed_node_list[-1].item == item
+		return self._traversed_node_list[-1].item == item
 
 	def clear(self):
 		'''
@@ -457,7 +457,7 @@ class AVL(object):
 		'''
 		self._root = None
 		self._n = 0
-		self.traversed_node_list = []
+		self._traversed_node_list = []
 
 
 	def __len__(self):
