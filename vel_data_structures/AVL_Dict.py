@@ -25,8 +25,8 @@ class _KeyVal(object):
 	def __gt__(self, other):
 		return self.key > other.key
 
-	# def __eq__(self, other):
-	# 	return self.key == other.key
+	def __eq__(self, other):
+		return self.key == other.key
 
 
 
@@ -83,6 +83,7 @@ class AVL_Dict(AVL):
 				raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
 			self._fix_heights(self.traversed_node_list)
 		self._n += 1
+		self.traversed_node_list = []
 
 
 	def remove(self, key):
@@ -163,20 +164,7 @@ class AVL_Dict(AVL):
 		param: item - the item to find in the tree
 		return: bool - if the item was found in the tree
 		'''
-		if self._root is None:
-			return False
-
-		curr = self._root
-		while True:
-			if curr is None:
-				return False
-
-			if curr.item.key == key:
-				return True
-			elif key < curr.item.key:
-				curr = curr.left
-			else:
-				curr = curr.right
+		return super().__contains__(_KeyVal(key, 0))
 
 
 	def keys_yield(self):
@@ -382,7 +370,7 @@ def main():
 
 	# Random deletions
 	def random_deletion_test():
-		for n in trange(0, 100, desc='Random deletion'):
+		for n in trange(100, desc='Random deletion'):
 			for x in tqdm(range(1000), desc='Rand loop'):
 				random.seed(x)
 				a = set([(random.randint(0, n), random.randint(0, n)) for x in range(n)])
@@ -390,7 +378,7 @@ def main():
 				d = dict(a)
 
 				for k, v in a:
-					if k in t:
+					if k in d:
 						del t[k]
 						del d[k]
 						t._verify_itself()

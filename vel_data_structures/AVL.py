@@ -114,6 +114,7 @@ class AVL(object):
 		self._remove_node(curr, curr_parent)
 		self._fix_heights(self.traversed_node_list)
 		self._n -= 1
+		self.traversed_node_list = []
 
 
 	def _find_insertion_point(self, item):
@@ -456,7 +457,7 @@ class AVL(object):
 		'''
 		self._root = None
 		self._n = 0
-
+		self.traversed_node_list = []
 
 
 	def __len__(self):
