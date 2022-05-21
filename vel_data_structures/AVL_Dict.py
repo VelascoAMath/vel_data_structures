@@ -22,6 +22,12 @@ class _KeyVal(object):
 	def __lt__(self, other):
 		return self.key < other.key
 
+	def __gt__(self, other):
+		return self.key > other.key
+
+	# def __eq__(self, other):
+	# 	return self.key == other.key
+
 
 
 @dataclass
@@ -86,36 +92,7 @@ class AVL_Dict(AVL):
 		:param key: the key to be deleted
 		:raises KeyError: if key is not in the tree
 		'''
-		if self._root is None:
-			raise KeyError(f"Cannot remove from an empty tree!")
-
-		if self._n == 1:
-			self._root = None
-			self._n = 0
-			return
-
-		curr = self._root
-		curr_parent = None
-		self.traversed_node_list = []
-		while True:
-			if curr is None:
-				raise KeyError(f"{item=} is not in the tree!")
-
-			self.traversed_node_list.append(curr)
-
-			if curr.item.key == key:
-				break
-			elif key < curr.item.key:
-				curr_parent = curr
-				curr = curr.left
-			elif curr.item.key < key:
-				curr_parent = curr
-				curr = curr.right
-
-		self.traversed_node_list.pop()
-		self._remove_node(curr, curr_parent)
-		self._fix_heights(self.traversed_node_list)
-		self._n -= 1
+		super().remove(_KeyVal(key, 0))
 
 
 	def get(self, key):
