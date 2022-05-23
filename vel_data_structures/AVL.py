@@ -66,7 +66,7 @@ class AVL(object):
 		'''
 		Adds an item to the tree
 
-		:param item: The item to be inserted
+		:param item: the item to be inserted
 		'''
 		if self._n == 0:
 			self._root = _Node(item)
@@ -86,12 +86,96 @@ class AVL(object):
 		
 		self._n += 1
 
+	def add_items(self, l):
+		'''
+		Add a list of items to the tree
+
+		:param l: the list of items to insert
+		'''
+		for i in l:
+			self.add(l)
+
+	def add_sorted(self, l):
+		'''
+		Lets us insert a collection of sorted items quickly when the tree is being initialized
+
+		:param l: the list of items to insert
+		:raises Exception: if l is not sorted
+		:raises Exception: if the tree is not empty
+		'''
+		if self._n != 0:
+			raise Exception("We can only quickly add sorted items into an empty tree!")
+
+		if not l:
+			return
+
+		for i in range(1, len(l)):
+			if l[i - 1] > l[i]:
+				raise Exception("{l=} is not sorted!")
+
+		
+		# First, we need to do an in-order traversal to add the items in a linear fashion
+		self._root = _Node()
+		stack = [(0, len(l) - 1, self._root)]
+
+		while stack:
+			low, high, node = stack.pop()
+			mid = (high + low) // 2
+			item = l[mid]
+			node.item = item
+			self._n += 1
+
+			balance = 0
+			if mid + 1  <= high:
+				balance += 1
+				node.right = _Node()
+				stack.append( (mid + 1, high, node.right) )
+
+			if mid - 1 >= low:
+				balance -= 1
+				node.left = _Node()
+				stack.append( (low, mid - 1, node.left) )
+		
+		# Now, we need to do a post-order traversal to update the balance factors and heights
+		stack = [(0, len(l) - 1, self._root)]
+		discovered = set()
+
+		while stack:
+
+
+			low, high, node = stack[-1]
+			if id(node) in discovered:
+				continue
+			mid = (high + low) // 2
+
+
+			expanded_stack = False
+			if mid + 1  <= high:
+				left = (mid + 1, high, node.right)
+				if id(left[2]) not in discovered:
+					stack.append( left )
+					expanded_stack = True
+
+			if mid - 1 >= low:
+				right = (low, mid - 1, node.left)
+				if id(right[2]) not in discovered:
+					stack.append( right )
+					expanded_stack = True
+
+			if not expanded_stack:
+				node = stack.pop()[2]
+				self._calculate_height_and_balance(node)
+				discovered.add(id(node))
+
+
+
+
 
 	def remove(self, item):
 		'''
 		Removes an item from the tree
 
-		:param item: The item to be deleted
+		:param item: the item to be deleted
 		:raises KeyError: if item is not in the tree
 		'''
 		if self._root is None:
@@ -197,8 +281,8 @@ class AVL(object):
 		A method to the node and pass its value to the parent.
 		This is the same as a delete operation in a BST
 
-		:param node: The node we want to delete
-		:param parent: The parent node of node
+		:param node: the node we want to delete
+		:param parent: the parent node of node
 		:raises Exception: if node isn't a _Node or the parent is None
 		'''
 		if not isinstance(node, _Node):
@@ -474,7 +558,7 @@ class AVL(object):
 		'''
 		Generator function that iterates DFS through the items in the tree
 
-		:return item: The items in the tree
+		:return item: the items in the tree
 		'''
 		if self._root is None:
 			yield from []
@@ -671,22 +755,41 @@ class AVL(object):
 
 	def _verify_itself(self, node=None):
 		'''
-		Verifies that the tree is balanced
+		Verifies that the tree is balanced, ordered, and has the correct balance factor and height
 		'''
 		if node is None:
 			node = self._root
 		if self._root is None:
 			return
 
+		prev_balance = node.balance
+		prev_height = node.height
 		self._calculate_height_and_balance(node)
+		
+		if node.balance != prev_balance:
+			raise Exception(f"{node} is a rule breaker!")
+		if node.height != prev_height:
+			raise Exception(f"{node} is a rule breaker!")
 		if node.balance < -1 or node.balance > 1:
 			raise Exception(f"{node} is a rule breaker!")
 
 		if node.left is not None:
+			if node.left.item > node.item:
+				raise Exception(f"{node} is a rule breaker!")
 			self._verify_itself(node.left)
 		if node.right is not None:
+			if node.right.item < node.item:
+				raise Exception(f"{node} is a rule breaker!")
 			self._verify_itself(node.right)
 
+		self._calculate_height_and_balance(node)
+
+		if node.balance != prev_balance:
+			raise Exception(f"{node} is a rule breaker!")
+		if node.height != prev_height:
+			raise Exception(f"{node} is a rule breaker!")
+		if node.balance < -1 or node.balance > 1:
+			raise Exception(f"{node} is a rule breaker!")
 
 
 
