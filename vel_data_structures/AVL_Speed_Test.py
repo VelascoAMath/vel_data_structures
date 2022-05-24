@@ -25,7 +25,7 @@ max     5.166247    0.051606       5.148310
 
 
 from AVL import AVL
-import time
+from time import time
 import pandas as pd
 import random
 from tqdm import tqdm
@@ -34,8 +34,24 @@ from tqdm import tqdm
 
 
 def main():
-	n = 2 ** 14 - 1
+	n = 2 ** 17 - 1
 	results = pd.DataFrame()
+
+	import cProfile
+	import pstats
+
+	with cProfile.Profile() as pr:
+		# a = AVL()
+		# a.add_sorted(list(range(n)))
+
+		a = AVL()
+		a.add_unsorted(list(range(n)))
+
+	stats = pstats.Stats(pr)
+	stats.sort_stats(pstats.SortKey.TIME)
+	stats.print_stats()
+	stats.dump_stats(filename='needs_profiling.prof')
+	return
 
 	for i in tqdm(range(10)):
 		l = list(range(n))
