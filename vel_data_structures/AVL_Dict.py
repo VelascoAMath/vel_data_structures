@@ -67,10 +67,10 @@ class AVL_Dict(AVL):
 			self._root = _Node( _KeyVal(key, val) )
 		else:
 			self._find_deletion_point( _KeyVal(key, val) )
-			curr = self.traversed_node_list[-1]
+			curr = self._traversed_node_list[-1]
 			# print(f"{self=}")
 			# print(f"{key=} {val=} {curr=} {curr.left=} {curr.right=}")
-			# print(f"{self.traversed_node_list}")
+			# print(f"{self._traversed_node_list}")
 			# print()
 			if curr.item.key == key:
 				curr.item = _KeyVal(key, val)
@@ -81,9 +81,9 @@ class AVL_Dict(AVL):
 				curr.right = _Node(item=_KeyVal(key, val) )
 			else:
 				raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
-			self._fix_heights(self.traversed_node_list)
+			self._fix_heights(self._traversed_node_list)
 		self._n += 1
-		self.traversed_node_list = []
+		self._traversed_node_list = []
 
 
 	def remove(self, key):
