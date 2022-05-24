@@ -44,17 +44,22 @@ class AVL(object):
 	_n: int = 0
 	_root: _Node = field(default_factory=_Node)
 
-	def __init__(self, items=None):
+	def __init__(self, items=None, fast_insert=True):
 		'''
 		Initializes the tree with the items (if provided)
 
 		:param list( items ) items: list of items to insert into the tree
+		:param bool fast_insert: whether or not to sort the list of items in order to quickly build the tree at the cost of increasing the memory requirements
 		'''
 		self.__post_init__()
 
 		if items is not None:
-			for item in items:
-				self.add(item)
+			if fast_insert:
+				l = list(items)
+				l.sort()
+				self.add_sorted(l)
+			else:
+				self.add_items(items)
 
 	def __post_init__(self):
 		super(AVL, self).__init__()
@@ -93,7 +98,7 @@ class AVL(object):
 		:param l: the list of items to insert
 		'''
 		for i in l:
-			self.add(l)
+			self.add(i)
 
 	def add_sorted(self, l):
 		'''
@@ -799,6 +804,55 @@ def main():
 	# t.to_dot('Trash')
 	# return
 
+	# Random insertions of lists
+	#
+	for x in tqdm(range(10000), desc='Insertion'):
+		s = list(range(100))
+		l = s[:]
+		random.seed(x)
+		random.shuffle(l)
+		t = AVL(l, False)
+		r = list(t)
+
+		if r != s:
+			raise Exception(f"{x=} results in an error!")
+
+		if len(r) != len(s):
+			raise Exception(f"{x=} results in an error!")
+
+
+
+	# Random duplicates
+	#
+	for x in tqdm(range(10000), desc='Duplicates'):
+		random.seed(x)
+		l = [random.randint(1, 100) for x in range(1000)]
+		s = l[:]
+		t = AVL()
+		t.add_items(l)
+		s.sort()
+		r = list(t)
+		if r != s:
+			raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+		if len(r) != len(s):
+			raise Exception(f"{x=} results in an error!")
+
+
+	# Check the contains
+	#
+	for x in tqdm(range(10000), desc='Contains'):
+		random.seed(x)
+		s = set(random.sample(list(range(1000)), 100))
+		c = set(range(1000)) - s
+
+		t = AVL(s, True)
+		for i in s:
+			if i not in t:
+				raise Exception(f"{x=} causes an error!")
+		for i in c:
+			if i in t:
+				raise Exception(f"{x=} causes an error!")
+
 	# Test the remove method
 	# 
 	for n in tqdm(list(itertools.chain(range(20), [50, 100])), desc='Size'):
@@ -808,9 +862,9 @@ def main():
 			random.seed(x)
 			a = set([random.randint(0, n) for x in range(n)])
 			b = set([random.randint(0, n) for x in range(n)])
-			for i in a:
-				t.add(i)
-				t._verify_itself()
+			
+			t.add_items(a)
+			t._verify_itself()
 
 			# print(t)
 			for i in b:
@@ -835,9 +889,9 @@ def main():
 			random.seed(x)
 			a = set([random.randint(0, n) for x in range(n)])
 			b = set([random.randint(0, n) for x in range(n)])
-			for i in a:
-				t.add(i)
-				t._verify_itself()
+			
+			t.add_sorted(sorted(list(a)))
+			t._verify_itself()
 
 			for i in b:
 				if i in t:
@@ -853,54 +907,6 @@ def main():
 	
 
 
-
-	# Random insertions of lists
-	#
-	for x in tqdm(range(10000), desc='Insertion'):
-		s = list(range(100))
-		l = s[:]
-		random.seed(x)
-		random.shuffle(l)
-		t = AVL(l)
-		r = list(t)
-
-		if r != s:
-			raise Exception(f"{x=} results in an error!")
-
-		if len(r) != len(s):
-			raise Exception(f"{x=} results in an error!")
-
-
-
-	# Random duplicates
-	#
-	for x in tqdm(range(10000), desc='Duplicates'):
-		random.seed(x)
-		l = [random.randint(1, 100) for x in range(1000)]
-		s = l[:]
-		t = AVL(l)
-		s.sort()
-		r = list(t)
-		if r != s:
-			raise Exception(f"{x=} results in an error!\n{r}\n{s}")
-		if len(r) != len(s):
-			raise Exception(f"{x=} results in an error!")
-
-
-	# Check the contains
-	#
-	for x in tqdm(range(10000), desc='Contains'):
-		random.seed(x)
-		s = set(random.sample(list(range(1000)), 100))
-		c = set(range(1000)) - s
-
-		t = AVL(s)
-		for i in s:
-			if i not in t:
-				raise Exception(f"{x=} causes an error!")
-		for i in c:
-			if i in t:
-				raise Exception(f"{x=} causes an error!")
 
 
 
