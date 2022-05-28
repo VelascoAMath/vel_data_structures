@@ -12,7 +12,7 @@ import itertools
 import random
 from tqdm import tqdm
 from tqdm.auto import trange
-from collections import deque
+from collections import deque, defaultdict
 import os
 
 @dataclass
@@ -668,11 +668,96 @@ class AVL(object):
 
 		return result
 
+	def __terminal_str__(self):
+		'''
+		Returns a visual representation of the tree that can be printed in the terminal
+
+		:return: a string representation of the tree
+		:rtype: str
+		'''
+		if self._root is None:
+			return ''
+
+
+		# The width of the final result
+		max_x = 0
+		min_y = 0
+		max_y = 0
+
+
+		# node, y, level
+		node_list = [(self._root, 0, 0)]
+		# Maps each tree level to the size of its largest node (when converted to a str)
+		level_to_max_len = defaultdict(int)
+
+		# We need to iterate through the tree to fill out level_to_max_len and to find out the size of the full display
+		while node_list:
+			node, y, level = node_list.pop()
+			# Update the largest item in the level
+			level_to_max_len[level] = max(level_to_max_len[level], len(str(node.item)))
+			min_y = min(y, min_y)
+			max_y = max(y, max_y)
+
+			if node.right is not None:
+				node_list.append((node.right, y - 2 ** (node.height - 2), level + 1))
+
+			if node.left is not None:
+				node_list.append((node.left, y + 2 ** (node.height - 2), level + 1))
+
+		# Get the total width
+		for i in level_to_max_len.values():
+			max_x += 1 + i
+		# The last level doesn't count
+		max_x -= 1
+
+		result = [[' '] * max_x for i in range(max_y - min_y + 1)]
+
+		# print(f"{min_y=} {max_y=} {max_x=}")
+		node_list = [(self._root, 0, 0, 0)]
+		while node_list:
+			node, x, y, level = node_list.pop()
+			# print(f"{node=} {x=} {y=} {level=}")
+			node_str = str(node.item).rjust(level_to_max_len[level])
+
+			for i in range(level_to_max_len[level] ):
+				result[y - min_y][x + i] = node_str[i]
+
+			stem_height = 2 ** (node.height - 2)
+			if node.right is not None:
+				node_list.append((node.right, x + level_to_max_len[level] + 1,  y - stem_height, level + 1))
+
+				for i in range(1, stem_height):
+					result[y - i - min_y][x + level_to_max_len[level] - 1] = '|'
+				result[y - stem_height - min_y][x + level_to_max_len[level] - 1] = '+'
+				result[y - stem_height - min_y][x + level_to_max_len[level]] = '>'
+
+			if node.left is not None:
+				node_list.append((node.left , x + level_to_max_len[level] + 1,  y + stem_height, level + 1))
+
+				for i in range(1, stem_height):
+					result[y + i - min_y][x + level_to_max_len[level] - 1] = '|'
+				result[y + stem_height - min_y][x + level_to_max_len[level] - 1] = '+'
+				result[y + stem_height - min_y][x + level_to_max_len[level]] = '>'
+
+
+		actual_result = ''
+		for line in result:
+			for c in line:
+				actual_result += c
+			actual_result += '\n'
+
+		return actual_result
+
+
+
+
+
+
 	def __repr__(self):
 		if self._root is None:
 			return 'AVL()'
 
-		return f"AVL({self.__dfs_str__(self._root)})"
+		return f"AVL(\n{self.__terminal_str__()})"
 
 	def __str__(self):
 		l = [f"{item}" for item in self]

@@ -28,6 +28,8 @@ class _KeyVal(object):
 	def __eq__(self, other):
 		return self.key == other.key
 
+	def __str__(self):
+		return f"{self.key}:{self.val}"
 
 
 @dataclass
@@ -257,7 +259,7 @@ class AVL_Dict(AVL):
 		if self._root is None:
 			return 'AVL_Dict()'
 	
-		return f"AVL_Dict({self.__dfs_str__(self._root)})"
+		return f"AVL_Dict({self.__terminal_str__()})"
 	
 	def __str__(self):
 		'''
