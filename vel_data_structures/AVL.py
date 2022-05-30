@@ -35,6 +35,24 @@ class _Node(object):
 	def __repr__(self):
 		return f"{self.item=} {self.height=} {self.balance=}"
 
+def _bin_log(num):
+	'''
+	Simple function to return two values.
+	The log_2 of the inputted number (as an int) and the largest power of 2 less than or equal to the inputted number
+
+	:param (int) num: the number we'll use to calculate
+	:return int: log_2(num) rounded down to an int
+	:return int: largest power of 2 that is <= num
+	'''
+	if not isinstance(num, int) or num < 1:
+		raise Exception(f"Inputted number{num} must be a positive integer!")
+	result = 1
+	i = 0
+	while result <= num:
+		result *= 2
+		i += 1
+	return (i - 1, result // 2)
+
 
 
 @dataclass
@@ -129,49 +147,26 @@ class AVL(object):
 			item = l[mid]
 			node.item = item
 			self._n += 1
+			sub_size = high - low + 1
 
-			balance = 0
+			height, rounded_log = _bin_log(sub_size)
+			# If the second most significant bit is 1, balance is 0. Otherwise, balance is -1
+			if (rounded_log // 2) & sub_size == 0:
+				balance = -1
+			else:
+				balance = 0
+
+
+			node.height = height
+			node.balance = balance
 			if mid + 1  <= high:
-				balance += 1
 				node.right = _Node()
 				stack.append( (mid + 1, high, node.right) )
 
 			if mid - 1 >= low:
-				balance -= 1
 				node.left = _Node()
 				stack.append( (low, mid - 1, node.left) )
 		
-		# Now, we need to do a post-order traversal to update the balance factors and heights
-		stack = [(0, len(l) - 1, self._root)]
-		discovered = set()
-
-		while stack:
-
-
-			low, high, node = stack[-1]
-			if id(node) in discovered:
-				continue
-			mid = (high + low) // 2
-
-
-			expanded_stack = False
-			if mid + 1  <= high:
-				left = (mid + 1, high, node.right)
-				if id(left[2]) not in discovered:
-					stack.append( left )
-					expanded_stack = True
-
-			if mid - 1 >= low:
-				right = (low, mid - 1, node.left)
-				if id(right[2]) not in discovered:
-					stack.append( right )
-					expanded_stack = True
-
-			if not expanded_stack:
-				node = stack.pop()[2]
-				self._calculate_height_and_balance(node)
-				discovered.add(id(node))
-
 
 
 
