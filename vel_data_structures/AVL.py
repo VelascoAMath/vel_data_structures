@@ -831,7 +831,7 @@ class AVL(object):
 						l_node_id = id(node.left)
 						node_to_index[l_node_id] = index
 						index += 1
-						f.write(f'\tn{node_to_index[node_id]} -> n{node_to_index[l_node_id]}\n')
+						f.write(f'\tn{node_to_index[node_id]} -> n{node_to_index[l_node_id]} [color="red"]\n')
 						
 						stack.append(node.left)
 						inserted_left = True
@@ -841,7 +841,7 @@ class AVL(object):
 						r_node_id = id(node.right)
 						node_to_index[r_node_id] = index
 						index += 1
-						f.write(f'\tn{node_to_index[node_id]} -> n{node_to_index[r_node_id]}\n')
+						f.write(f'\tn{node_to_index[node_id]} -> n{node_to_index[r_node_id]} [color="blue"]\n')
 
 						stack.append(node.right)
 						if not inserted:
