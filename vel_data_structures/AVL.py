@@ -45,7 +45,7 @@ def _bin_log(num):
 	:return int: largest power of 2 that is <= num
 	'''
 	if not isinstance(num, int) or num < 1:
-		raise Exception(f"Inputted number{num} must be a positive integer!")
+		raise Exception(f"Inputted number({num}) must be a positive integer!")
 	result = 1
 	i = 0
 	while result <= num:
@@ -53,7 +53,27 @@ def _bin_log(num):
 		i += 1
 	return (i - 1, result // 2)
 
-
+def _left_BST_split(i):
+	'''
+	In order to create a BST which are inserted in this order
+		   1
+		  /  \
+		 2    3
+		/ \  /
+	   4   5 6
+	we need to figure out how many nodes need to be allocated to the right and left sides.
+	This is a non-trivial task and we had to work hard to find these equations to find the number of items.
+	This function will, given the number of items in a list, calculate the number of items that the left subtree will contain.
+	In our example, our list has 6 items so our formula will say that there will be exactly 3 items to the left of the middle node
+	:param (int) i: the number of items in the list to subdivide
+	:return int: the number of items that the left subtree will contain
+	'''
+	num = _bin_log(i)[1]
+	
+	if (num >> 1) & i != 0:
+		return (num >> 1) + 1 + (((num - 1) >> 1) - 1)
+	else:
+		return (num >> 1) + (((num - 1) >> 1) & i)
 
 @dataclass
 class AVL(object):
@@ -139,19 +159,20 @@ class AVL(object):
 		
 		# First, we need to do an in-order traversal to add the items in a linear fashion
 		self._root = _Node()
-		stack = [(0, len(l) - 1, self._root)]
+		stack = [(0, len(l), self._root)]
 
 		while stack:
 			low, high, node = stack.pop()
-			mid = (high + low) // 2
+			mid = _left_BST_split(high - low) + low
 			item = l[mid]
 			node.item = item
 			self._n += 1
-			sub_size = high - low + 1
+			sub_size = high - low
 
 			height, rounded_log = _bin_log(sub_size)
+			height += 1
 			# If the second most significant bit is 1, balance is 0. Otherwise, balance is -1
-			if (rounded_log // 2) & sub_size == 0:
+			if height > 1 and (rounded_log // 2) & sub_size == 0:
 				balance = -1
 			else:
 				balance = 0
@@ -159,13 +180,13 @@ class AVL(object):
 
 			node.height = height
 			node.balance = balance
-			if mid + 1  <= high:
+			if mid + 1  < high:
 				node.right = _Node()
 				stack.append( (mid + 1, high, node.right) )
 
-			if mid - 1 >= low:
+			if low < mid:
 				node.left = _Node()
-				stack.append( (low, mid - 1, node.left) )
+				stack.append( (low, mid, node.left) )
 		
 
 
