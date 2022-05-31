@@ -805,53 +805,33 @@ class AVL(object):
 			f.write('rankdir=UD\n')
 
 			if self._root is not None:
-				node_to_index = {}
-				index = 0
-				discovered = set()
-				stack = [self._root]
+				stack = [(self._root, 0)]
 
 				while stack:
-					node = stack[-1]
+					node, node_id = stack.pop()
+
 					if node is None:
 						raise Exception("This tree has a None element!")
 					if not isinstance(node, _Node):
 						raise Exception("This tree has a non-_Node {node} element!")
 					
-					node_id = id(node)
-					discovered.add(node_id)
-					if node_id not in node_to_index:
-						node_to_index[node_id] = index
-						index += 1
-					f.write(f'\tn{node_to_index[node_id]}[shape=circle, label="{node.item}"]\n')
+					f.write(f'\tn{node_id}[shape=circle, label="{node.item}"]\n')
 
-					inserted_left = False
-					inserted = False
 
-					if node.left is not None and id(node.left) not in discovered:
-						l_node_id = id(node.left)
-						node_to_index[l_node_id] = index
-						index += 1
-						f.write(f'\tn{node_to_index[node_id]} -> n{node_to_index[l_node_id]} [color="red"]\n')
+
+					if node.left is not None:
+						l_node_id = node_id + 1
+						f.write(f'\tn{node_id} -> n{l_node_id} [color="red"]\n')
 						
-						stack.append(node.left)
-						inserted_left = True
-						inserted = True
+						stack.append( (node.left, l_node_id) )
 
-					if not inserted_left and node.right is not None and id(node.right) not in discovered:
-						r_node_id = id(node.right)
-						node_to_index[r_node_id] = index
-						index += 1
-						f.write(f'\tn{node_to_index[node_id]} -> n{node_to_index[r_node_id]} [color="blue"]\n')
+					if node.right is not None:
+						# The left subtree can only contain at most 2 ^ (node.height - 1) nodes
+						r_node_id = node_id + (1 << (node.height - 1) )
+						f.write(f'\tn{node_id} -> n{r_node_id} [color="blue"]\n')
 
-						stack.append(node.right)
-						if not inserted:
-							item = stack.pop(-2)
-							# yield item
-						inserted = True
+						stack.append( (node.right, r_node_id) )
 
-					if not inserted:
-						item = stack.pop()
-						# yield item
 
 
 			f.write('}\n')
