@@ -14,7 +14,7 @@ from tqdm.auto import trange
 from collections import deque
 from AVL import AVL, _Node
 
-@dataclass(eq=False, order=False)
+@dataclass(eq=False, order=False, frozen=True)
 class _KeyVal(object):
 	key: int = 0
 	val: int = 0
@@ -31,6 +31,8 @@ class _KeyVal(object):
 	def __str__(self):
 		return f"{self.key}:{self.val}"
 
+	def __hash__(self):
+		return self.key.__hash__()
 
 @dataclass
 class AVL_Dict(AVL):
@@ -65,22 +67,20 @@ class AVL_Dict(AVL):
 		:param key: The key to be inserted
 		:param val: The value to which key maps
 		'''
+		new_item = _KeyVal(key, val)
 		if self._n == 0:
-			self._root = _Node( _KeyVal(key, val) )
+			self._root = _Node( new_item )
 		else:
-			self._find_deletion_point( _KeyVal(key, val) )
+			self._find_deletion_point( new_item )
 			curr = self._traversed_node_list[-1]
-			# print(f"{self=}")
-			# print(f"{key=} {val=} {curr=} {curr.left=} {curr.right=}")
-			# print(f"{self._traversed_node_list}")
-			# print()
+
 			if curr.item.key == key:
-				curr.item = _KeyVal(key, val)
+				curr.item = new_item
 				return
 			elif key < curr.item.key and curr.left is None:
-				curr.left = _Node(item=_KeyVal(key, val))
+				curr.left = _Node(item=new_item)
 			elif curr.item.key < key and curr.right is None:
-				curr.right = _Node(item=_KeyVal(key, val) )
+				curr.right = _Node(item=new_item )
 			else:
 				raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
 			self._fix_heights(self._traversed_node_list)
