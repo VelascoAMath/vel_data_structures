@@ -850,32 +850,26 @@ class AVL(object):
 
 		prev_balance = node.balance
 		prev_height = node.height
-		self._calculate_height_and_balance(node)
-		
-		if node.balance != prev_balance:
-			raise Exception(f"{node} is a rule breaker!")
-		if node.height != prev_height:
-			raise Exception(f"{node} is a rule breaker!")
-		if node.balance < -1 or node.balance > 1:
-			raise Exception(f"{node} is a rule breaker!")
+
 
 		if node.left is not None:
 			if node.left.item > node.item:
-				raise Exception(f"{node} is a rule breaker!")
+				raise Exception(f"{node} > {node.left} (it's left child)!")
 			self._verify_itself(node.left)
 		if node.right is not None:
 			if node.right.item < node.item:
-				raise Exception(f"{node} is a rule breaker!")
+				raise Exception(f"{node} > {node.right} (it's right child)!")
 			self._verify_itself(node.right)
 
 		self._calculate_height_and_balance(node)
-
+		
 		if node.balance != prev_balance:
-			raise Exception(f"{node} is a rule breaker!")
+			raise Exception(f"{node} should have a balance of {node.balance}!")
 		if node.height != prev_height:
-			raise Exception(f"{node} is a rule breaker!")
+			raise Exception(f"{node} should have a height of {node.height}!")
 		if node.balance < -1 or node.balance > 1:
-			raise Exception(f"{node} is a rule breaker!")
+			raise Exception(f"{node} should have a balance in [-1, 1]!")
+
 
 
 
