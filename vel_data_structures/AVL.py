@@ -854,11 +854,11 @@ class AVL(object):
 
 		if node.left is not None:
 			if node.left.item > node.item:
-				raise Exception(f"{node} > {node.left} (it's left child)!")
+				raise Exception(f"{node} > {node.left} (its left child)!")
 			self._verify_itself(node.left)
 		if node.right is not None:
 			if node.right.item < node.item:
-				raise Exception(f"{node} > {node.right} (it's right child)!")
+				raise Exception(f"{node} > {node.right} (its right child)!")
 			self._verify_itself(node.right)
 
 		self._calculate_height_and_balance(node)
@@ -881,105 +881,113 @@ def main():
 
 	# Random insertions of lists
 	#
-	for x in tqdm(range(10000), desc='Insertion'):
-		s = list(range(100))
-		l = s[:]
-		random.seed(x)
-		random.shuffle(l)
-		t = AVL(l, False)
-		r = list(t)
+	def random_insertion_test():
+		for x in tqdm(range(10000), desc='Insertion'):
+			s = list(range(100))
+			l = s[:]
+			random.seed(x)
+			random.shuffle(l)
+			t = AVL(l, False)
+			r = list(t)
 
-		if r != s:
-			raise Exception(f"{x=} results in an error!")
+			if r != s:
+				raise Exception(f"{x=} results in an error!")
 
-		if len(r) != len(s):
-			raise Exception(f"{x=} results in an error!")
+			if len(r) != len(s):
+				raise Exception(f"{x=} results in an error!")
 
 
 
 	# Random duplicates
 	#
-	for x in tqdm(range(10000), desc='Duplicates'):
-		random.seed(x)
-		l = [random.randint(1, 100) for x in range(1000)]
-		s = l[:]
-		t = AVL()
-		t.add_items(l)
-		s.sort()
-		r = list(t)
-		if r != s:
-			raise Exception(f"{x=} results in an error!\n{r}\n{s}")
-		if len(r) != len(s):
-			raise Exception(f"{x=} results in an error!")
+	def random_duplicate_test():
+		for x in tqdm(range(10000), desc='Duplicates'):
+			random.seed(x)
+			l = [random.randint(1, 100) for x in range(1000)]
+			s = l[:]
+			t = AVL()
+			t.add_items(l)
+			s.sort()
+			r = list(t)
+			if r != s:
+				raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+			if len(r) != len(s):
+				raise Exception(f"{x=} results in an error!")
 
 
 	# Check the contains
 	#
-	for x in tqdm(range(10000), desc='Contains'):
-		random.seed(x)
-		s = set(random.sample(list(range(1000)), 100))
-		c = set(range(1000)) - s
-
-		t = AVL(s, True)
-		for i in s:
-			if i not in t:
-				raise Exception(f"{x=} causes an error!")
-		for i in c:
-			if i in t:
-				raise Exception(f"{x=} causes an error!")
-
-	# Test the remove method
-	# 
-	for n in tqdm(list(itertools.chain(range(20), [50, 100])), desc='Size'):
-		t = AVL()
-		for x in tqdm(range(10000), desc='Remove'):
-			t.clear()
+	def contains_test():
+		for x in tqdm(range(10000), desc='Contains'):
 			random.seed(x)
-			a = set([random.randint(0, n) for x in range(n)])
-			b = set([random.randint(0, n) for x in range(n)])
-			
-			t.add_items(a)
-			t._verify_itself()
+			s = set(random.sample(list(range(1000)), 100))
+			c = set(range(1000)) - s
 
-			# print(t)
-			for i in b:
+			t = AVL(s, True)
+			for i in s:
+				if i not in t:
+					raise Exception(f"{x=} causes an error!")
+			for i in c:
 				if i in t:
-					t.remove(i)
-					t._verify_itself()
+					raise Exception(f"{x=} causes an error!")
 
-			s = a - b
-			r = set(t)
-			if r != s:
-				raise Exception(f"{x=} results in an error!\n{r}\n{s}")
-			if len(r) != len(s):
-				raise Exception(f"{x=} results in an error!")
+	def remove_test():
+		# Test the remove method
+		# 
+		for n in tqdm(list(itertools.chain(range(20), [50, 100])), desc='Size'):
+			t = AVL()
+			for x in tqdm(range(10000), desc='Remove'):
+				t.clear()
+				random.seed(x)
+				a = set([random.randint(0, n) for x in range(n)])
+				b = set([random.randint(0, n) for x in range(n)])
+				
+				t.add_items(a)
+				t._verify_itself()
+
+				# print(t)
+				for i in b:
+					if i in t:
+						t.remove(i)
+						t._verify_itself()
+
+				s = a - b
+				r = set(t)
+				if r != s:
+					raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+				if len(r) != len(s):
+					raise Exception(f"{x=} results in an error!")
+		
+
+		# Test the remove method
+		# 
+		for n in tqdm([1000, 10000], desc='Size'):
+			t = AVL()
+			for x in tqdm(range(1000 // n), desc='Remove'):
+				t.clear()
+				random.seed(x)
+				a = set([random.randint(0, n) for x in range(n)])
+				b = set([random.randint(0, n) for x in range(n)])
+				
+				t.add_sorted(sorted(list(a)))
+				t._verify_itself()
+
+				for i in b:
+					if i in t:
+						t.remove(i)
+						t._verify_itself()
+
+				s = a - b
+				r = set(t)
+				if r != s:
+					raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+				if len(r) != len(s):
+					raise Exception(f"{x=} results in an error!")
 	
-
-	# Test the remove method
-	# 
-	for n in tqdm([1000, 10000], desc='Size'):
-		t = AVL()
-		for x in tqdm(range(1000 // n), desc='Remove'):
-			t.clear()
-			random.seed(x)
-			a = set([random.randint(0, n) for x in range(n)])
-			b = set([random.randint(0, n) for x in range(n)])
-			
-			t.add_sorted(sorted(list(a)))
-			t._verify_itself()
-
-			for i in b:
-				if i in t:
-					t.remove(i)
-					t._verify_itself()
-
-			s = a - b
-			r = set(t)
-			if r != s:
-				raise Exception(f"{x=} results in an error!\n{r}\n{s}")
-			if len(r) != len(s):
-				raise Exception(f"{x=} results in an error!")
-	
+	random_insertion_test()
+	random_duplicate_test()
+	contains_test()
+	remove_test()
 
 
 
