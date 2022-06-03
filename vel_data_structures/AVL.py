@@ -154,7 +154,7 @@ class AVL(object):
 
 		for i in range(1, len(l)):
 			if l[i - 1] > l[i]:
-				raise Exception("{l=} is not sorted!")
+				raise Exception(f"{l=} is not sorted!")
 
 		
 		# First, we need to do an in-order traversal to add the items in a linear fashion
