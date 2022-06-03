@@ -68,7 +68,7 @@ class AVL_Set(AVL):
 		:param list( items ) items: list of items to insert into the tree
 		:param bool fast_insert: whether or not to sort the list of items in order to quickly build the tree at the cost of increasing the memory requirements
 		'''
-		super(AVL, self).__init__()
+		super(AVL_Set, self).__init__()
 
 		if items is not None:
 			if fast_insert:
@@ -118,7 +118,7 @@ class AVL_Set(AVL):
 		Lets us insert a collection of sorted items quickly when the tree is being initialized
 
 		:param l: the list of items to insert
-		:raises Exception: if l is not sorted
+		:raises Exception: if l is not sorted or has duplicates
 		:raises Exception: if the tree is not empty
 		'''
 		if self._n != 0:
@@ -129,42 +129,11 @@ class AVL_Set(AVL):
 
 		for i in range(1, len(l)):
 			if l[i - 1] > l[i]:
-				raise Exception("{l=} is not sorted!")
+				raise Exception(f"{l=} is not sorted!")
+			elif l[i - 1] == l[i]:
+				raise Exception(f"{l=} has duplicates at index {i}")
 
-		
-		# First, we need to do an in-order traversal to add the items in a linear fashion
-		self._root = _Node()
-		stack = [(0, len(l), self._root)]
-
-		while stack:
-			low, high, node = stack.pop()
-			mid = _left_BST_split(high - low) + low
-			item = l[mid]
-			node.item = item
-			self._n += 1
-			sub_size = high - low
-
-			height, rounded_log = _bin_log(sub_size)
-			height += 1
-			# If the second most significant bit is 1, balance is 0. Otherwise, balance is -1
-			if height > 1 and (rounded_log // 2) & sub_size == 0:
-				balance = -1
-			else:
-				balance = 0
-
-
-			node.height = height
-			node.balance = balance
-			if mid + 1  < high:
-				node.right = _Node()
-				stack.append( (mid + 1, high, node.right) )
-
-			if low < mid:
-				node.left = _Node()
-				stack.append( (low, mid, node.left) )
-		
-
-
+		super(AVL_Set, self).add_sorted(l)
 
 
 
@@ -308,6 +277,20 @@ def main():
 			if len(r) != len(s):
 				raise Exception(f"{x=} results in an error!")
 
+		for x in tqdm(range(1000), desc='Duplicates'):
+			random.seed(x)
+			l = list(set([random.randint(1, 100) for x in range(1000)]))
+			l.sort()
+			s = set(l)
+			t = AVL_Set(l)
+			t._verify_itself()
+			r = set(t)
+			if r != s:
+				raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+			if len(r) != len(s):
+				raise Exception(f"{x=} results in an error!")
+
+
 
 	# Check the contains
 	#
@@ -373,7 +356,7 @@ def main():
 
 				s = a - b
 				r = set(t)
-				if len(r) != len(s):
+				if len(list(t)) != len(s):
 					raise Exception(f"{x=} results in an sets of different lengths!\n{r}\n{s}")
 				if r != s:
 					raise Exception(f"{x=} results in an error!\n{r}\n{s}")
