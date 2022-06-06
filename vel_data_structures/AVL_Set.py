@@ -17,46 +17,6 @@ import os
 from AVL import AVL, _Node
 
 
-def _bin_log(num):
-	'''
-	Simple function to return two values.
-	The log_2 of the inputted number (as an int) and the largest power of 2 less than or equal to the inputted number
-
-	:param (int) num: the number we'll use to calculate
-	:return int: log_2(num) rounded down to an int
-	:return int: largest power of 2 that is <= num
-	'''
-	if not isinstance(num, int) or num < 1:
-		raise Exception(f"Inputted number({num}) must be a positive integer!")
-	result = 1
-	i = 0
-	while result <= num:
-		result *= 2
-		i += 1
-	return (i - 1, result // 2)
-
-def _left_BST_split(i):
-	'''
-	In order to create a BST which are inserted in this order
-		   1
-		  /  \
-		 2    3
-		/ \  /
-	   4   5 6
-	we need to figure out how many nodes need to be allocated to the right and left sides.
-	This is a non-trivial task and we had to work hard to find these equations to find the number of items.
-	This function will, given the number of items in a list, calculate the number of items that the left subtree will contain.
-	In our example, our list has 6 items so our formula will say that there will be exactly 3 items to the left of the middle node
-	:param (int) i: the number of items in the list to subdivide
-	:return int: the number of items that the left subtree will contain
-	'''
-	num = _bin_log(i)[1]
-	
-	if (num >> 1) & i != 0:
-		return (num >> 1) + 1 + (((num - 1) >> 1) - 1)
-	else:
-		return (num >> 1) + (((num - 1) >> 1) & i)
-
 @dataclass
 class AVL_Set(AVL):
 	"""Represents an AVL tree"""
@@ -72,7 +32,7 @@ class AVL_Set(AVL):
 
 		if items is not None:
 			if fast_insert:
-				l = list(items)
+				l = list(set(items))
 				l.sort()
 				self.add_sorted(l)
 			else:
