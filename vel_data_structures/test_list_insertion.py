@@ -1,12 +1,18 @@
+'''
+
+Checks to make sure that my new version of insert_into_list().
+
+@author: Alfredo Velasco
+'''
+
+
+
 from BTree import insert_into_list
 from tqdm import tqdm, trange
 import random
 
 
 def main():
-	from functools import partialmethod
-
-	tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 	for b in tqdm([True, False], desc='bool loop'):
 		for n in tqdm(list(range(1, 100)), desc='size loop', smoothing=0):
 			for x in trange(1000, desc='random loop'):
