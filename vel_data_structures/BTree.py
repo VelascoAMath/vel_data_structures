@@ -10,36 +10,56 @@ import random
 import os
 from tqdm.auto import trange
 
-def get_insertion_index(item, l):
+def get_insertion_index(item, l, reverse=False):
 	'''
 	Returns the position where item should be inserted so that l stays sorted
 
 	:param item: the item to insert
 	:param l: the list where item could be inserted
 	:retun index: the index where item would be inserted
+	:param reverse=False: whether or not the index should insert the item into l in sorted order or reverse sorted order
 	'''
-	if len(l) == 0 or item < l[0]:
+
+	if len(l) == 0:
 		return 0
 
-	if item < l[0]:
-		return 0
+	if reverse:
+		# Insert at the end
+		if item <= l[-1]:
+			return len(l)
 
-	elif l[-1] <= item:
-		return len(l)
+		# Need to insert at the beginning
+		if item > l[0]:
+			return 0
+
+		# Need to insert in the middle
+		for i in range(len(l) - 1, -1, -1):
+			if l[i] >= item >= l[i + 1]:
+				return i + 1
 	else:
-		for i in range(0, len(l) - 1):
+		# Insert at the end
+		if item < l[0]:
+			return 0
+
+		# Need to insert at the beginning
+		if l[-1] <= item:
+			return len(l)
+
+		# Need to insert in the middle
+		for i in range(len(l) - 1, -1, -1):
 			if l[i] <= item <= l[i + 1]:
 				return i + 1
 
 
-def insert_into_list(item, l):
+def insert_into_list(item, l, reverse=False):
 	'''
 	Inserts item into l in a position that keeps l sorted
 
 	:param item: the item to insert
 	:param l: the list where item will be inserted
+	:param reverse=False: whether or not we should insert the item into l in sorted order or reverse sorted order
 	'''
-	l.insert(get_insertion_index(item, l), item)
+	l.insert(get_insertion_index(item, l, reverse), item)
 
 @dataclass(order=True)
 class _Node(object):
