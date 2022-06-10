@@ -127,63 +127,6 @@ class AVL_Set(AVL):
 		return f"AVL_Set(\n{self.__terminal_str__()})"
 
 
-	def to_dot(self, f_name):
-		'''
-
-		   This method writes out the AVL to a .dot file so that it can be visualized by graphviz.
-
-		   :param str f_name: the name of the files
-		   :raises Exception: if the f_name has a non .dot extension
-		'''
-
-		filen, file_ext = os.path.splitext(f_name)
-
-		if file_ext != '.dot' and file_ext != '':
-			raise Exception(f"{f_name=} must end with .dot if it has an extension!")
-
-		file_ext = '.dot'
-		f_name = f"{filen}{file_ext}"
-
-		with open(f_name, 'w') as f:
-			f.write("digraph AVL{\n")
-			f.write('node[fontname="Helvetica,Arial,sans-serif"]\n')
-			f.write('layout=dot\n')
-			f.write('rankdir=UD\n')
-
-			if self._root is not None:
-				stack = [(self._root, 0)]
-
-				while stack:
-					node, node_id = stack.pop()
-
-					if node is None:
-						raise Exception("This tree has a None element!")
-					if not isinstance(node, _Node):
-						raise Exception("This tree has a non-_Node {node} element!")
-					
-					f.write(f'\tn{node_id}[shape=circle, label="{node.item}"]\n')
-
-
-
-					if node.left is not None:
-						l_node_id = node_id + 1
-						f.write(f'\tn{node_id} -> n{l_node_id} [color="red"]\n')
-						
-						stack.append( (node.left, l_node_id) )
-
-					if node.right is not None:
-						# The left subtree can only contain at most 2 ^ (node.height - 1) nodes
-						r_node_id = node_id + (1 << (node.height - 1) )
-						f.write(f'\tn{node_id} -> n{r_node_id} [color="blue"]\n')
-
-						stack.append( (node.right, r_node_id) )
-
-
-
-			f.write('}\n')
-
-
-
 
 	def _verify_itself(self, node=None):
 		'''
