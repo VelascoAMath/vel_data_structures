@@ -5,14 +5,15 @@ https://en.wikipedia.org/wiki/AVL_tree
 @author: Alfredo Velasco
 '''
 
+from AVL import _Node
+from AVL_Set import AVL_Set
+from collections import deque
 from dataclasses import dataclass, field
 from pprint import pprint
-import itertools
-import random
 from tqdm import tqdm
 from tqdm.auto import trange
-from collections import deque
-from AVL import AVL, _Node
+import itertools
+import random
 
 @dataclass(eq=False, order=False, frozen=True)
 class _KeyVal(object):
@@ -41,7 +42,7 @@ class _KeyVal(object):
 		return self.key.__hash__()
 
 @dataclass
-class AVL_Dict(AVL):
+class AVL_Dict(AVL_Set):
 	"""
 	A dictionary that uses an AVL tree
 	"""
@@ -55,7 +56,7 @@ class AVL_Dict(AVL):
 		:param dict items: dictionary to copy
 
 		'''
-		super(AVL_Dict, self).__init__()
+		super(AVL_Dict, self).__init__(replace_duplicates=True)
 
 		if items is not None:
 			if isinstance(items, dict):
@@ -74,23 +75,7 @@ class AVL_Dict(AVL):
 		:param val: The value to which key maps
 		'''
 		new_item = _KeyVal(key, val)
-		if self._n == 0:
-			self._root = _Node( new_item )
-		else:
-			self._find_deletion_point( new_item )
-			curr = self._traversed_node_list[-1]
-
-			if curr.item.key == key:
-				curr.item = new_item
-				return
-			elif key < curr.item.key and curr.left is None:
-				curr.left = _Node(item=new_item)
-			elif curr.item.key < key and curr.right is None:
-				curr.right = _Node(item=new_item )
-			else:
-				raise Exception(f"{self=} {item=}\nI didn't think about this situation!")
-			self._fix_heights(self._traversed_node_list)
-		self._n += 1
+		super().add(new_item)
 		self._traversed_node_list = []
 
 
