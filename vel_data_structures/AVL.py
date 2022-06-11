@@ -6,14 +6,15 @@ https://en.wikipedia.org/wiki/AVL_tree
 @author: Alfredo Velasco
 '''
 
+from collections import deque, defaultdict
 from dataclasses import dataclass, field
 from pprint import pprint
-import itertools
-import random
 from tqdm import tqdm
 from tqdm.auto import trange
-from collections import deque, defaultdict
+import graphviz
+import itertools
 import os
+import random
 
 @dataclass
 class _Node(object):
@@ -780,61 +781,55 @@ class AVL(object):
 		return '{' + ', '.join(l) + '}'
 
 
-
 	def to_dot(self, f_name):
 		'''
 
-		   This method writes out the AVL to a .dot file so that it can be visualized by graphviz.
+		   This method writes out the AVL to a .dot file and a visualization by graphviz.
 
-		   :param str f_name: the name of the files
-		   :raises Exception: if the f_name has a non .dot extension
+		   :param str f_name: the name of the files. If no extension is provided, the output will be in .pdf
 		'''
 
 		filen, file_ext = os.path.splitext(f_name)
 
-		if file_ext != '.dot' and file_ext != '':
-			raise Exception(f"{f_name=} must end with .dot if it has an extension!")
+		if file_ext == '':
+			file_ext = '.pdf'
 
-		file_ext = '.dot'
-		f_name = f"{filen}{file_ext}"
 
-		with open(f_name, 'w') as f:
-			f.write("digraph AVL{\n")
-			f.write('node[fontname="Helvetica,Arial,sans-serif"]\n')
-			f.write('layout=dot\n')
-			f.write('rankdir=UD\n')
+		dot = graphviz.Digraph('AVL', filename=filen, format=file_ext[1:], node_attr={'fontname': 'Helvetica,Arial,sans-serif'})
 
-			if self._root is not None:
-				stack = [(self._root, 0)]
+		dot.attr(rankdir='UP')
 
-				while stack:
-					node, node_id = stack.pop()
+		if self._root is not None:
+			stack = [(self._root, 0)]
 
-					if node is None:
-						raise Exception("This tree has a None element!")
-					if not isinstance(node, _Node):
-						raise Exception("This tree has a non-_Node {node} element!")
+			while stack:
+				node, node_id = stack.pop()
+
+				if node is None:
+					raise Exception("This tree has a None element!")
+				if not isinstance(node, _Node):
+					raise Exception("This tree has a non-_Node {node} element!")
+				
+				dot.node(f"n{node_id}", shape='circle', label=f"{node.item}")
+
+
+
+				if node.left is not None:
+					l_node_id = node_id + 1
+					dot.edge(f"n{node_id}", f"n{l_node_id}", color='red')
 					
-					f.write(f'\tn{node_id}[shape=circle, label="{node.item}"]\n')
+					stack.append( (node.left, l_node_id) )
+
+				if node.right is not None:
+					# The left subtree can only contain at most 2 ^ (node.height - 1) nodes
+					r_node_id = node_id + (1 << (node.height - 1) )
+					dot.edge(f"n{node_id}", f"n{r_node_id}", color='blue')
+
+					stack.append( (node.right, r_node_id) )
+
+		dot.render()
 
 
-
-					if node.left is not None:
-						l_node_id = node_id + 1
-						f.write(f'\tn{node_id} -> n{l_node_id} [color="red"]\n')
-						
-						stack.append( (node.left, l_node_id) )
-
-					if node.right is not None:
-						# The left subtree can only contain at most 2 ^ (node.height - 1) nodes
-						r_node_id = node_id + (1 << (node.height - 1) )
-						f.write(f'\tn{node_id} -> n{r_node_id} [color="blue"]\n')
-
-						stack.append( (node.right, r_node_id) )
-
-
-
-			f.write('}\n')
 
 
 
