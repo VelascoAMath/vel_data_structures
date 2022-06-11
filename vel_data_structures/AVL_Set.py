@@ -21,19 +21,40 @@ from AVL import AVL, _Node
 class AVL_Set(AVL):
 	"""Represents an AVL tree"""
 
-	def __init__(self, items=None, fast_insert=True):
+	def __init__(self, items=None, fast_insert=True, replace_duplicates=False):
 		'''
 		Initializes the tree with the items (if provided)
 
 		:param list( items ) items: list of items to insert into the tree
-		:param bool fast_insert: whether or not to sort the list of items in order to quickly build the tree at the cost of increasing the memory requirements
+		:param bool fast_insert=False: whether or not to sort the list of items in order to quickly build the tree at the cost of increasing the memory requirements
+		:param bool replace_duplicates=False: whether or not to sort the list of items in order to quickly build the tree at the cost of increasing the memory requirements
 		'''
 		super(AVL_Set, self).__init__()
+		self.replace_duplicates = replace_duplicates
 
 		if items is not None:
 			if fast_insert:
-				l = list(set(items))
+				l = list(items)
+
+				# Nothing to insert
+				if not l:
+					return
+
 				l.sort()
+				if replace_duplicates:
+					l.reverse()
+
+				index_list = [0]
+				for i in range(1, len(l)):
+					if l[i - 1] != l[i]:
+						index_list.append(i)
+
+
+				l = [l[i] for i in index_list]
+				if replace_duplicates:
+					l.reverse()
+
+
 				self.add_sorted(l)
 			else:
 				self.add_items(items)
@@ -53,6 +74,8 @@ class AVL_Set(AVL):
 			curr = self._traversed_node_list[-1]
 
 			if curr.item == item:
+				if self.replace_duplicates:
+					curr.item = item
 				return
 			elif item < curr.item and curr.left is None:
 				curr.left = _Node(item=item)
@@ -102,63 +125,6 @@ class AVL_Set(AVL):
 			return 'AVL_Set()'
 
 		return f"AVL_Set(\n{self.__terminal_str__()})"
-
-
-	def to_dot(self, f_name):
-		'''
-
-		   This method writes out the AVL to a .dot file so that it can be visualized by graphviz.
-
-		   :param str f_name: the name of the files
-		   :raises Exception: if the f_name has a non .dot extension
-		'''
-
-		filen, file_ext = os.path.splitext(f_name)
-
-		if file_ext != '.dot' and file_ext != '':
-			raise Exception(f"{f_name=} must end with .dot if it has an extension!")
-
-		file_ext = '.dot'
-		f_name = f"{filen}{file_ext}"
-
-		with open(f_name, 'w') as f:
-			f.write("digraph AVL{\n")
-			f.write('node[fontname="Helvetica,Arial,sans-serif"]\n')
-			f.write('layout=dot\n')
-			f.write('rankdir=UD\n')
-
-			if self._root is not None:
-				stack = [(self._root, 0)]
-
-				while stack:
-					node, node_id = stack.pop()
-
-					if node is None:
-						raise Exception("This tree has a None element!")
-					if not isinstance(node, _Node):
-						raise Exception("This tree has a non-_Node {node} element!")
-					
-					f.write(f'\tn{node_id}[shape=circle, label="{node.item}"]\n')
-
-
-
-					if node.left is not None:
-						l_node_id = node_id + 1
-						f.write(f'\tn{node_id} -> n{l_node_id} [color="red"]\n')
-						
-						stack.append( (node.left, l_node_id) )
-
-					if node.right is not None:
-						# The left subtree can only contain at most 2 ^ (node.height - 1) nodes
-						r_node_id = node_id + (1 << (node.height - 1) )
-						f.write(f'\tn{node_id} -> n{r_node_id} [color="blue"]\n')
-
-						stack.append( (node.right, r_node_id) )
-
-
-
-			f.write('}\n')
-
 
 
 
@@ -224,7 +190,7 @@ def main():
 	# Random duplicates
 	#
 	def random_duplicate_test():
-		for x in tqdm(range(10000), desc='Duplicates'):
+		for x in tqdm(range(10), desc='Duplicates'):
 			random.seed(x)
 			l = [random.randint(1, 100) for x in range(1000)]
 			s = set(l)
@@ -237,7 +203,7 @@ def main():
 			if len(r) != len(s):
 				raise Exception(f"{x=} results in an error!")
 
-		for x in tqdm(range(1000), desc='Duplicates'):
+		for x in tqdm(range(10), desc='Duplicates'):
 			random.seed(x)
 			l = list(set([random.randint(1, 100) for x in range(1000)]))
 			l.sort()
@@ -245,6 +211,43 @@ def main():
 			t = AVL_Set(l)
 			t._verify_itself()
 			r = set(t)
+			if r != s:
+				raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+			if len(r) != len(s):
+				raise Exception(f"{x=} results in an error!")
+
+
+
+		from AVL_Dict import _KeyVal
+		# Test the AVL_Set when we can't replace duplicates
+		# [(1, 1), (1, 2)] should  be converted into {(1, 1)}
+		for x in tqdm(range(1000), desc='Duplicates'):
+			random.seed(x)
+			l = [_KeyVal(random.randint(1, 100), random.randint(1, 100)) for x in range(1000)]
+			t = AVL_Set(l, replace_duplicates=False)
+			s = set(l)
+			s = [(x.key, x.val) for x in s]
+			t._verify_itself()
+			r = list((x.key, x.val) for x in t)
+			l.sort()
+			# print(f"{l=}\n{r=}\n{s=}\n")
+			if r != s:
+				raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+			if len(r) != len(s):
+				raise Exception(f"{x=} results in an error!")
+
+		# Test the AVL_Set when we can replace duplicates
+		# [(1, 1), (1, 2)] should  be converted into {(1, 2)}
+		for x in tqdm(range(1000), desc='Duplicates'):
+			random.seed(x)
+			l = [_KeyVal(random.randint(1, 100), random.randint(1, 100)) for x in range(1000)]
+			t = AVL_Set(l, replace_duplicates=True)
+			l.reverse()
+			s = set(l)
+			s = [(x.key, x.val) for x in s]
+			t._verify_itself()
+			r = list((x.key, x.val) for x in t)
+			# print(f"{l=}\n{r=}\n{s=}\n")
 			if r != s:
 				raise Exception(f"{x=} results in an error!\n{r}\n{s}")
 			if len(r) != len(s):
