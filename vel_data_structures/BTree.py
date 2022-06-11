@@ -6,60 +6,11 @@ https://en.wikipedia.org/wiki/B-tree
 '''
 
 from dataclasses import dataclass, field
-import random
-import os
+from List_Heap import List_Heap, get_insertion_index
 from tqdm.auto import trange
+import os
+import random
 
-def get_insertion_index(item, l, reverse=False):
-	'''
-	Returns the position where item should be inserted so that l stays sorted
-
-	:param item: the item to insert
-	:param l: the list where item could be inserted
-	:retun index: the index where item would be inserted
-	:param reverse=False: whether or not the index should insert the item into l in sorted order or reverse sorted order
-	'''
-
-	if len(l) == 0:
-		return 0
-
-	if reverse:
-		# Insert at the end
-		if item <= l[-1]:
-			return len(l)
-
-		# Need to insert at the beginning
-		if item > l[0]:
-			return 0
-
-		# Need to insert in the middle
-		for i in range(len(l) - 1, -1, -1):
-			if l[i] >= item >= l[i + 1]:
-				return i + 1
-	else:
-		# Insert at the end
-		if item < l[0]:
-			return 0
-
-		# Need to insert at the beginning
-		if l[-1] <= item:
-			return len(l)
-
-		# Need to insert in the middle
-		for i in range(len(l) - 1, -1, -1):
-			if l[i] <= item <= l[i + 1]:
-				return i + 1
-
-
-def insert_into_list(item, l, reverse=False):
-	'''
-	Inserts item into l in a position that keeps l sorted
-
-	:param item: the item to insert
-	:param l: the list where item will be inserted
-	:param reverse=False: whether or not we should insert the item into l in sorted order or reverse sorted order
-	'''
-	l.insert(get_insertion_index(item, l, reverse), item)
 
 @dataclass(order=True)
 class _Node(object):
@@ -67,19 +18,20 @@ class _Node(object):
 	A node in the AVL tree
 	"""
 
-	num_list: list = field(default_factory=list)
-	children: list = field(default_factory=list)
+	num_list: List_Heap = field(default_factory=List_Heap)
+	children: List_Heap = field(default_factory=List_Heap)
 	def __post_init__(self):
 
 
-		self.children = []
+		self.num_list = List_Heap(min=False)
+		self.children = List_Heap(min=False)
 
 
 	def add(self, item):
-		insert_into_list(item, self.num_list)
+		self.num_list.insert(item)
 
 	def _add_child(self, new_child):
-		insert_into_list(new_child, self.children)
+		self.children.insert(new_child)
 
 	def __contains__(self, item):
 		return item in self.num_list
