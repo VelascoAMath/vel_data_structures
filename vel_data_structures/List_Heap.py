@@ -76,10 +76,20 @@ class List_Heap(object):
 
 
 	def insert(self, item):
+		'''
+		Inserts an item into the heap
+	
+		:param item: what will be inserted into the heap
+		'''
 		insert_into_list(item, self.item_list, self.min)
 
 
 	def pop(self, index=None):
+		'''
+		Removes and returns the smallest (or largest if min=False) item in the heap
+
+		:returns: smallest (or largest if min=False) item in the heap
+		'''
 		if not self.item_list:
 			raise Exception("Cannot pop an empty List_Heap!")
 
@@ -88,9 +98,19 @@ class List_Heap(object):
 		return self.item_list.pop()
 
 	def index(self, item):
+		'''
+		Returns the index where the item can be found
+
+		:returns int: index of the item in the heap. -1 means item is not in the heap
+		'''
 		return self.item_list.index(item)
 
 	def remove(self, item):
+		'''
+		Removes the specified item
+	
+		:param item: the item to remove
+		'''
 		self.item_list.remove(item)
 
 	def __getitem__(self, key):
@@ -121,6 +141,41 @@ class List_Heap(object):
 
 	def __bool__(self):
 		return bool(self.item_list)
+
+	def __contains__(self, item):
+		if self.min:
+			if self.item_list[0] < item or item < self.item_list[-1]:
+				return False
+		
+			start = 0
+			end = len(self.item_list)
+
+			while start < end:
+				mid = (start + end) // 2
+				if self.item_list[mid] == item:
+					return True
+				elif self.item_list[mid] < item:
+					end = mid
+				else:
+					start = mid + 1
+			return False
+		else:
+			if item < self.item_list[0] or self.item_list[-1] < item:
+				return False
+
+			start = 0
+			end = len(self.item_list)
+
+			while start < end:
+				mid = (start + end) // 2
+				if self.item_list[mid] == item:
+					return True
+				elif item < self.item_list[mid]:
+					end = mid
+				else:
+					start = mid + 1
+			return False
+
 		
 
 
@@ -150,7 +205,7 @@ def main():
 
 	def sort_test():
 		n = 10000
-		for x in tqdm(list(range(10000)), desc='size loop', smoothing=0):
+		for x in tqdm(list(range(10000)), desc='random loop', smoothing=0):
 			random.seed(x)
 			a = list([random.randint(-n, n) for x in range(n)])
 			b = List_Heap(a)
@@ -161,10 +216,27 @@ def main():
 				s.append(b.pop())
 
 			if a != s:
-				raise Exception("{x=} causes an error!")
+				raise Exception(f"{x=} causes an error!")
+
+	def contain_test():
+		n = 1000
+
+		for x in tqdm(list(range(10000)), desc='random loop', smoothing=0):
+			for min in [True, False]:
+				random.seed(x)
+				a = set([random.randint(-n, n) for x in range(n)])
+				b = List_Heap(a, min=min)
+
+				for i in range(-n - 10, n + 1):
+					if i in a and i not in b:
+						raise Exception(f"{x=} causes an error since {i} is in a but not in b!")
+					if i not in a and i in b:
+						raise Exception(f"{x=} causes an error since {i} is not in a but in b!")
+
 
 	insert_test()
 	sort_test()
+	contain_test()
 
 
 if __name__ == '__main__':
