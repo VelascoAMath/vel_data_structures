@@ -1,3 +1,10 @@
+'''
+This is our List_Heap module.
+It's just a sorted list
+
+@author: Alfredo Velasco
+'''
+
 from dataclasses import dataclass, field
 from tqdm import tqdm, trange
 import random
@@ -59,7 +66,11 @@ class List_Heap(object):
 
 	item_list: list = field(default_factory=list)
 
-	"""docstring for List_Heap"""
+	"""
+	A heap that is implemented by using a list
+	This can quickly remove and return the smallest item.
+	We also have an option to turn the largest item if prefered
+	"""
 	def __init__(self, item_list=None, fast_insert=True, min=True):
 		super(List_Heap, self).__init__()
 		self.item_list = []
