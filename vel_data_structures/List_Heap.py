@@ -94,12 +94,22 @@ class List_Heap(object):
 		'''
 		insert_into_list(item, self.item_list, self.min)
 
+	def extend(self, item_list):
+		'''
+		Inserts a collection of items into the heap
+
+		:param item_list: list of items to insert
+		'''
+
+		for item in item_list:
+			self.insert(item)
 
 	def pop(self, index=None):
 		'''
 		Removes and returns the smallest (or largest if min=False) item in the heap
 
 		:returns: smallest (or largest if min=False) item in the heap
+		:raises Exception: if index is out of bounds or heap is empty
 		'''
 		if not self.item_list:
 			raise Exception("Cannot pop an empty List_Heap!")
@@ -123,6 +133,7 @@ class List_Heap(object):
 		:param item: the item to remove
 		'''
 		self.item_list.remove(item)
+
 
 	def __getitem__(self, key):
 		return self.item_list[key]
