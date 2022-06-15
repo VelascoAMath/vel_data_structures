@@ -154,6 +154,10 @@ class List_Heap(object):
 		return bool(self.item_list)
 
 	def __contains__(self, item):
+
+		if len(self.item_list) == 0:
+			return False
+
 		if self.min:
 			if self.item_list[0] < item or item < self.item_list[-1]:
 				return False
