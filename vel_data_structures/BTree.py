@@ -7,15 +7,20 @@ https://en.wikipedia.org/wiki/B-tree
 
 from dataclasses import dataclass, field
 from List_Heap import List_Heap, get_insertion_index
+from tqdm import tqdm
 from tqdm.auto import trange
+import itertools
 import os
 import random
 
 
+global _global_node_id
+_global_node_id = 0
+
 @dataclass(order=True)
 class _Node(object):
 	"""
-	A node in the AVL tree
+	A node in the B-tree
 	"""
 
 	num_list: List_Heap = field(default_factory=List_Heap)
@@ -25,6 +30,9 @@ class _Node(object):
 
 		self.num_list = List_Heap(min=False)
 		self.children = List_Heap(min=False)
+		global _global_node_id
+		self._id = _global_node_id
+		_global_node_id += 1
 
 
 	def add(self, item):
@@ -69,13 +77,29 @@ class BTree(object):
 	_b: int = 3
 	# The root of the tree
 	_root: _Node = None
-	
-	def __post_init__(self):
+
+	def __init__(self, b=3, items=None):
+
+		if not isinstance(b, int):
+			raise Exception(f"b should be an int but is instead {type(b)}!")
+
 		if self._b < 2:
-			raise Exception(f"Invalid {self._b=} specified! It must be at least 2!")
+			raise Exception(f"Invalid {self._b=} specified! It must be at least 2!")	
 
 		self._root = _Node()
-		self.n = 0
+		self._n = 0
+
+		if items is not None:
+			self.add_items(items)
+
+	def add_items(self, l):
+		'''
+		Add a list of items to the tree
+
+		:param l: the list of items to insert
+		'''
+		for index, i in enumerate(l):
+			self.add(i)
 
 	def add(self, item):
 		'''
@@ -95,7 +119,7 @@ class BTree(object):
 
 		if len(curr.num_list) > self._b:
 			self._rebalance(visited_list)
-		self.n += 1
+		self._n += 1
 
 	def _rebalance(self, visited_list):
 		'''
@@ -177,6 +201,9 @@ class BTree(object):
 			visited_list.pop()
 
 
+	def clear(self):
+		self._root = _Node()
+		self._n = 0
 
 	def remove(self, item):
 		'''
@@ -209,8 +236,8 @@ class BTree(object):
 			
 
 
-		self.n -= 1
-		if len(visited_list[-1]) == 0 and self.n > 0:
+		self._n -= 1
+		if len(visited_list[-1]) == 0 and self._n > 0:
 			self._rebalance(visited_list)
 
 
@@ -219,11 +246,58 @@ class BTree(object):
 
 
 	def __len__(self):
-		return self.n
+		return self._n
+
+	def __iter__(self):
+		'''
+		A DFS iterator through the tree
+		'''
+		self.discovered = set()
+		if self._root is None:
+			self.stack = []
+		else:
+			self.stack = [ (self._root, 0) ]
+		return self
+
+	def __next__(self):
+
+		while self.stack:
+			node, item_index = self.stack[-1]
+			# print(f"{node=} {item_index=}")
+
+			self.discovered.add(node._id)
+			# print(f"{self.discovered=}")
+
+			added_child = False
+			for i, child in enumerate(node.children):
+				if child._id in self.discovered:
+					if item_index == i and i < len(node.num_list):
+						self.stack[-1] = (node, item_index + 1)
+						# print(f"Returning {node.num_list[i]}")
+						return node.num_list[i]
+					else:
+						continue
+				self.stack.append( (child, 0) )
+				self.discovered.add(child._id)
+				added_child = True
+				# print(f"Adding {child=} 0")
+				break
+
+			if not added_child:
+				if item_index < len(node.num_list):
+					# print(f"Returning {node.num_list[item_index]}")
+					self.stack[-1] = (node, item_index + 1)
+					return node.num_list[item_index]
+				else:
+					self.stack.pop()
+
+		raise StopIteration
+
+
 
 	def to_dot(self, f_name):
 		'''
-		This method writes out the AVL to a .dot file so that it can be visualized by graphviz
+		This method writes out the B-tree to a .dot file so that it can be visualized by graphviz
 
 		:param str f_name: the name of the file where the output will be printed
 		:raises Exception: if f_name has a non .dot extension
@@ -238,7 +312,7 @@ class BTree(object):
 		f_name = f"{filen}{file_ext}"
 
 		with open(f_name, 'w') as f:
-			f.write("digraph AVL{\n")
+			f.write("digraph BTree{\n")
 			f.write('node[fontname="Helvetica,Arial,sans-serif",shape=box]\n')
 			f.write('layout=dot\n')
 			f.write('rankdir=UD\n')
@@ -287,16 +361,129 @@ class BTree(object):
 
 
 def main():
-	for n in trange(2, 20, desc='Size loop'):
-		for x in trange(1000, desc='Random loop'):
-			a = BTree(n)
-			l = list(range(1000))
-			random.seed(x)
-			random.shuffle(l)
-			for i in l:
-				a.add(i)
-			for i in l:
-				a.remove(i)
+	
+	# Random insertions of lists
+	#
+	def random_insertion_test():
+		for n in trange(2, 20, desc='Size loop'):
+			for x in tqdm(range(1000), desc='Insertion'):
+				s = list(range(1000))
+				l = s[:]
+				random.seed(x)
+				random.shuffle(l)
+				t = BTree(n, l)
+				r = list(t)
+
+				if r != s:
+					raise Exception(f"{x=} results in an error!")
+
+				if len(r) != len(s):
+					raise Exception(f"{x=} results in an error!")
+
+	# Random duplicates
+	#
+	def random_duplicate_test():
+		for n in trange(2, 20, desc='Size loop'):
+			for x in tqdm(range(1000), desc='Duplicates'):
+				random.seed(x)
+				l = [random.randint(1, 10) for x in range(10)]
+				s = l[:]
+				t = BTree(n)
+				t.add_items(l)
+				s.sort()
+				r = list(t)
+				if r != s:
+					raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+				if len(r) != len(s):
+					raise Exception(f"{x=} results in an error!")
+
+
+	# Check the contains
+	#
+	def contains_test():
+		for n in tqdm([2, 15, 20], desc='Size loop'):
+			for x in tqdm(range(100), desc='Contains'):
+				random.seed(x)
+				s = set(random.sample(list(range(1000)), 100))
+				c = set(range(1000)) - s
+
+				t = BTree(n, s)
+				for i in s:
+					if i not in t:
+						raise Exception(f"{x=} causes an error!")
+				for i in c:
+					if i in t:
+						raise Exception(f"{x=} causes an error!")
+
+	def remove_test():
+		# Test the remove method
+		# 
+		for n in tqdm(list(itertools.chain(range(20), [50, 100])), desc='Size'):
+			t = BTree(n)
+			for x in tqdm(range(10000), desc='Remove'):
+				t.clear()
+				random.seed(x)
+				a = set([random.randint(0, n) for x in range(n)])
+				b = set([random.randint(0, n) for x in range(n)])
+				
+				t.add_items(a)
+
+				# print(t)
+				for i in b:
+					if i in t:
+						t.remove(i)
+
+				s = a - b
+				r = set(t)
+				if r != s:
+					raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+				if len(r) != len(s):
+					raise Exception(f"{x=} results in an error!")
+		
+
+		# # Test the remove method
+		# # 
+		# for n in tqdm([1000, 10000], desc='Size'):
+		# 	t = BTree(n)
+		# 	for x in tqdm(range(1000 // n), desc='Remove'):
+		# 		t.clear()
+		# 		random.seed(x)
+		# 		a = set([random.randint(0, n) for x in range(n)])
+		# 		b = set([random.randint(0, n) for x in range(n)])
+				
+		# 		t.add_sorted(sorted(list(a)))
+
+		# 		for i in b:
+		# 			if i in t:
+		# 				t.remove(i)
+		# 				t._verify_itself()
+
+		# 		s = a - b
+		# 		r = set(t)
+		# 		if r != s:
+		# 			raise Exception(f"{x=} results in an error!\n{r}\n{s}")
+		# 		if len(r) != len(s):
+		# 			raise Exception(f"{x=} results in an error!")
+	
+	import cProfile
+	import pstats
+
+	with cProfile.Profile() as pr:
+		random_insertion_test()
+		random_duplicate_test()
+		contains_test()
+		remove_test()
+
+	stats = pstats.Stats(pr)
+	stats.sort_stats(pstats.SortKey.TIME)
+	stats.dump_stats(filename='BTree.prof')
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
