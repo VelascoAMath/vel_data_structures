@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
     # name='Velasco\' Python Structures',
     name='vel_data_structures',
-    version='3.3.0',
+    version='3.3.1',
     author='Alfredo Velasco',
     author_email='avelasco@princeton.edu',
     description='Testing installation of Package',

@@ -294,6 +294,10 @@ class BTree(object):
 		raise StopIteration
 
 
+	def __str__(self):
+		l = [f"{item}" for item in self ]
+		return '[' + ', '.join(l) + ']'
+
 
 	def to_dot(self, f_name):
 		'''
@@ -439,44 +443,13 @@ def main():
 					raise Exception(f"{x=} results in an error!\n{r}\n{s}")
 				if len(r) != len(s):
 					raise Exception(f"{x=} results in an error!")
-		
 
-		# # Test the remove method
-		# # 
-		# for n in tqdm([1000, 10000], desc='Size'):
-		# 	t = BTree(n)
-		# 	for x in tqdm(range(1000 // n), desc='Remove'):
-		# 		t.clear()
-		# 		random.seed(x)
-		# 		a = set([random.randint(0, n) for x in range(n)])
-		# 		b = set([random.randint(0, n) for x in range(n)])
-				
-		# 		t.add_sorted(sorted(list(a)))
-
-		# 		for i in b:
-		# 			if i in t:
-		# 				t.remove(i)
-		# 				t._verify_itself()
-
-		# 		s = a - b
-		# 		r = set(t)
-		# 		if r != s:
-		# 			raise Exception(f"{x=} results in an error!\n{r}\n{s}")
-		# 		if len(r) != len(s):
-		# 			raise Exception(f"{x=} results in an error!")
 	
-	import cProfile
-	import pstats
+	random_insertion_test()
+	random_duplicate_test()
+	contains_test()
+	remove_test()
 
-	with cProfile.Profile() as pr:
-		random_insertion_test()
-		random_duplicate_test()
-		contains_test()
-		remove_test()
-
-	stats = pstats.Stats(pr)
-	stats.sort_stats(pstats.SortKey.TIME)
-	stats.dump_stats(filename='BTree.prof')
 
 
 
@@ -487,5 +460,7 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+	b = BTree(3, range(20))
+
+	print(b)
 
