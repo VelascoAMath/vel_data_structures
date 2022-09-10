@@ -5,14 +5,15 @@ https://en.wikipedia.org/wiki/B-tree
 @author: Alfredo Velasco
 '''
 
+from collections import defaultdict
 from dataclasses import dataclass, field
 from List_Heap import List_Heap, get_insertion_index
+from pprint import pprint
 from tqdm import tqdm
 from tqdm.auto import trange
 import itertools
 import os
 import random
-
 
 global _global_node_id
 _global_node_id = 0
@@ -294,6 +295,106 @@ class BTree(object):
 		raise StopIteration
 
 
+	def __repr__(self):
+		'''
+		Returns a graphical representation of the tree
+		'''
+
+		if self._root is None:
+			return ''
+		
+		self.discovered = set()
+
+		# node, level, item index
+		self.stack = [ (self._root, 0, 0) ]
+		y = 0
+		# Each item maps to a list of coordinates in the terminal
+		item_to_coords = defaultdict(list)
+		# Each level of the tree has a minimum width needed to hold all of its elements
+		level_to_width = defaultdict(int)
+
+		# DFS to get all of the elements and their coordinates
+		while self.stack:
+			node, level, item_index = self.stack[-1]
+
+			self.discovered.add(node._id)
+
+			added_child = False
+			for i, child in enumerate(node.children):
+				if child._id in self.discovered:
+					if item_index == i and i < len(node.num_list):
+						self.stack[-1] = (node, level + 1, item_index + 1)
+
+						added_child = False
+						break
+					else:
+						continue
+				self.stack.append( (child, level + 1, 0) )
+				self.discovered.add(child._id)
+				added_child = True
+				break
+
+			if not added_child:
+				if item_index < len(node.num_list):
+
+					self.stack[-1] = (node, level, item_index + 1)
+
+					item = node.num_list[item_index]
+					item_to_coords[item].append( (y, level) )
+					if level == 0:
+						level_to_width[level] = max(level_to_width[level], len(str(item)))
+					else:
+						level_to_width[level] = max(len(str(item)) + 3 + level_to_width[level - 1], level_to_width[level])
+
+					y += 1
+				else:
+					self.stack.pop()
+
+		# pprint(item_to_coords)
+		# pprint(level_to_width)
+
+
+		def replace_2d_str(M, element, row, col):
+			'''
+			Replaces the items in a 2D array M with the characters of element in position row,col
+
+			example
+			M = #####
+				#####
+				#####
+				#####
+			
+			replace_2d_str(M, 'abc', 1, 2)
+
+			M = #####
+				##abc
+				#####
+				#####
+
+			'''
+			element_str = str(element)
+
+			for i in range(len(element_str)):
+				M[row][col + i] = element_str[i]
+
+		
+		# Set a 2D representation of the output string
+		# Each element is a character that will be printed to the screen
+		x = max(level_to_width.values()) - 1
+		result = []
+		for i in range(y):
+			result.append([])
+			for j in range(x):
+				result[-1].append(' ')
+
+		for item in item_to_coords:
+			for coor in item_to_coords[item]:
+				replace_2d_str(result, item, coor[0], level_to_width[coor[1] - 1])
+
+		# We want to elements to increase as we scroll up so we need to reverse the lines
+		result.reverse()
+		return '\n'.join([''.join(x) for x in result])
+
 	def __str__(self):
 		l = [f"{item}" for item in self ]
 		return '[' + ', '.join(l) + ']'
@@ -460,7 +561,6 @@ def main():
 
 
 if __name__ == '__main__':
-	b = BTree(3, range(20))
+	b = BTree(3, range(100))
 
-	print(b)
-
+	pprint(b)
