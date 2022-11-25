@@ -151,6 +151,8 @@ class BHeap(object):
 
 		return item
 
+	def __len__(self):
+		return self._n
 
 	def __bool__(self):
 		return self._n > 0
