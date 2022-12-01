@@ -104,6 +104,7 @@ class BHeap(object):
 
 
 		self._forest[k] = curr
+		return curr
 
 
 	def insert(self, item):
@@ -115,9 +116,9 @@ class BHeap(object):
 		curr = _Tree(item)
 		self._n += 1
 
-		self._insert_tree(curr)
+		curr = self._insert_tree(curr)
 
-		if self._min_heap is None or curr < self._min_heap:
+		if self._min_heap is None or curr <= self._min_heap:
 			self._min_heap = curr
 
 	def pop(self):
@@ -176,6 +177,10 @@ def main():
 					print(f"Adding {a=} and we have {b=}")
 					raise Exception(f"{n=} {x=} provides us the wrong minimum! We found {b=} instead of {min(a)}")
 
+				if len(b) != len(a):
+					print(f"Adding {a=} and we have {b=}")
+					raise Exception(f"{n=} {x=} provides us the wrong length! We found {len(b)=} instead of {len(a)}")
+
 	def sort_test():
 		n = 10000
 		for x in tqdm(list(range(10000)), desc='size loop', smoothing=0):
@@ -185,8 +190,12 @@ def main():
 			a.sort()
 			s = []
 
+			i = n - 1
 			while b:
 				s.append(b.pop())
+				if len(b) != i:
+					raise Exception("NO")
+				i -= 1
 
 			if a != s:
 				raise Exception("{x=} causes an error!")
@@ -197,3 +206,4 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
