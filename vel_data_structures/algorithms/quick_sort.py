@@ -1,4 +1,5 @@
 import itertools
+import random
 
 from tqdm import tqdm
 
@@ -73,7 +74,7 @@ def partition_test():
 						raise Exception(f"{size=} {x=} {a=}")
 
 
-def quicksort(a, lo=None, hi=None):
+def quicksort(a, lo=None, hi=None, lb=None, ub=None):
 	if (len(a) <= 1):
 		return
 	if lo is None:
@@ -84,13 +85,18 @@ def quicksort(a, lo=None, hi=None):
 	if hi - lo <= 1:
 		return
 
+	if lb is None:
+		lb = 0
+	if ub is None:
+		ub = hi
+
 	pivot = a[hi-1]
 	_partition(a, lo, hi)
 	pivot_index = a.index(pivot)
-	if( lo < pivot_index):
-		quicksort(a, lo, pivot_index)
-	if (pivot_index < hi):
-		quicksort(a, pivot_index, hi)
+	if( lo < pivot_index and pivot_index > lb):
+		quicksort(a, lo, pivot_index, lb, ub)
+	if (pivot_index < hi and pivot_index < ub):
+		quicksort(a, pivot_index, hi, lb, ub)
 
 
 def quicksort_test():
@@ -105,7 +111,15 @@ def quicksort_test():
 						raise Exception(f"{size=} {x=} {a=}")
 
 
+def main():
+	a = list(range(50))
+	random.shuffle(a)
+
+	print(a)
+	quicksort(a, lb=20, ub=30)
+	print(a)
 
 if __name__ == '__main__':
-	partition_test()
-	quicksort_test()
+	# partition_test()
+	# quicksort_test()
+	main()
