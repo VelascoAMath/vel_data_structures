@@ -1,6 +1,9 @@
 import itertools
 import random
+import time
+from pprint import pprint
 
+import optuna
 from tqdm import tqdm
 
 
@@ -74,7 +77,20 @@ def partition_test():
 						raise Exception(f"{size=} {x=} {a=}")
 
 
-def quicksort(a, lo=None, hi=None, lb=None, ub=None):
+# https://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Insertion_sort#Python
+def insertion_sort(array, lo=None, hi=None):
+	if lo is None: lo = 1
+	if hi is None: hi = len(array)
+
+	for removed_index in range(lo, hi):
+		removed_value = array[removed_index]
+		insert_index = removed_index
+		while insert_index > 0 and array[insert_index - 1] > removed_value:
+			array[insert_index] = array[insert_index - 1]
+			insert_index -= 1
+		array[insert_index] = removed_value
+
+def quicksort(a, lo=None, hi=None, lb=None, ub=None, insert_size=10):
 	if (len(a) <= 1):
 		return
 	if lo is None:
@@ -91,8 +107,11 @@ def quicksort(a, lo=None, hi=None, lb=None, ub=None):
 		ub = hi
 
 	pivot = a[hi-1]
-	_partition(a, lo, hi)
-	pivot_index = a.index(pivot)
+	if hi - lo < insert_size:
+		(_, pivot_index) = insertion_sort(a, lo, hi)
+	else:
+		_partition(a, lo, hi)
+
 	if( lo < pivot_index and pivot_index > lb):
 		quicksort(a, lo, pivot_index, lb, ub)
 	if (pivot_index < hi and pivot_index < ub):
