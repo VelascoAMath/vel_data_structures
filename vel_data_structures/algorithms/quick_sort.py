@@ -109,11 +109,11 @@ def quicksort(a, lo=None, hi=None, lb=None, ub=None, insert_size=10):
 	if ub is None:
 		ub = hi
 
-	pivot = a[hi-1]
-	if hi - lo < insert_size:
-		(_, pivot_index) = insertion_sort(a, lo, hi)
+	if hi - lo <= insert_size:
+		insertion_sort(a, lo, hi)
+		return
 	else:
-		_partition(a, lo, hi)
+		pivot_index = _partition(a, lo=lo, hi=hi)
 
 	if( lo < pivot_index and pivot_index > lb):
 		quicksort(a, lo, pivot_index, lb, ub)
