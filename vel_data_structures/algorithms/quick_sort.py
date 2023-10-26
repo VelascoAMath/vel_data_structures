@@ -7,7 +7,7 @@ import optuna
 from tqdm import tqdm
 
 
-def _partition(a, lo=None, hi=None):
+def _partition(a, pivot_index=None, lo=None, hi=None):
 	'''
 	lo: the inclusive lower index of the range one wishes to partition
 	hi: the exclusive higher index of the range one wishes to partition
@@ -19,7 +19,7 @@ def _partition(a, lo=None, hi=None):
 
 	# Empty and singular arrays are partitioned already
 	if len(a) <= 1:
-		return
+		return 0
 
 	if hi is None:
 		hi = len(a)
@@ -28,9 +28,13 @@ def _partition(a, lo=None, hi=None):
 
 	# Empty and singular arrays are already partitioned
 	if hi - lo <= 1:
-		return
+		return lo
 
-	pivot_index = hi - 1
+	if pivot_index is None:
+		pivot_index = hi - 1
+	else:
+		swap(a, hi-1, pivot_index)
+		pivot_index = hi - 1
 	pivot = a[pivot_index]
 
 	i = lo
@@ -46,7 +50,7 @@ def _partition(a, lo=None, hi=None):
 		# Done. Just need to play the pivot in place
 		if i >= j:
 			swap(a, i, pivot_index)
-			return
+			return i
 
 		# No issue. Let's move on
 		if a[i] <= pivot and pivot <= a[j]:
@@ -60,21 +64,20 @@ def _partition(a, lo=None, hi=None):
 
 
 def partition_test():
+	random.seed(2)
 	for size in tqdm(range(10 + 1)):
 		l = list(range(1, size + 1))
 		for x in itertools.permutations(l):
 			a = list(x)
+			pivot_index = _partition(a)
 			if len(a) > 0:
-				pivot = a[-1]
-			_partition(a)
-			if len(a) > 0:
-				pivot_index = a.index(pivot)
+				pivot = a[pivot_index]
 				for i in range(pivot_index):
 					if a[i] > pivot:
-						raise Exception(f"{size=} {x=} {a=}")
+						raise Exception(f"{pivot_index=} {pivot=} {x=} {i=} {a=}")
 				for i in range(pivot_index + 1, len(a)):
 					if a[i] < pivot:
-						raise Exception(f"{size=} {x=} {a=}")
+						raise Exception(f"{pivot_index=} {pivot=} {x=} {i=} {a=}")
 
 
 # https://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Insertion_sort#Python
