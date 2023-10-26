@@ -1,10 +1,14 @@
 import itertools
+import os.path
+import pickle
 import random
 import time
 from pprint import pprint
-
+import seaborn as sns
 import optuna
+import pandas as pd
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 
 def _partition(a, pivot_index=None, lo=None, hi=None):
@@ -134,14 +138,68 @@ def quicksort_test():
 
 
 def main():
-	a = list(range(50))
+	a = list(range(10000))
 	random.shuffle(a)
 
 	print(a)
-	quicksort(a, lb=20, ub=30)
+	start = time.time()
+	quicksort(a)
+	end = time.time()
 	print(a)
+
+	print(end - start)
+
+
+def optimize_selection():
+	if os.path.isfile('results.pkl'):
+		with open('results.pkl', 'rb') as f:
+			results = pickle.load(f)
+	else:
+		results = {}
+
+	print(results)
+	trial_list = list(itertools.product(range(100), range(100)))
+	trial_list = [x for x in trial_list if x not in results]
+	random.shuffle(trial_list)
+	print(trial_list)
+
+	for i, size in tqdm(trial_list):
+		try:
+			a = list(range(1000000))
+			random.seed(i)
+			random.shuffle(a)
+
+			start = time.time()
+			quicksort(a, insert_size=size)
+			end = time.time()
+			results[(i, size)] = end - start
+		except:
+			with open('results.pkl', 'wb') as f:
+				pickle.dump(results, f)
+			return
+
+
+	with open('results.pkl', 'wb') as f:
+		pickle.dump(results, f)
+
+	data_list = list([tuple([*x, y]) for x, y in results.items()] )
+	print(data_list)
+
+	df = pd.DataFrame(data_list, columns=["Trial", "Insertion Size", "Time"])
+	print(df)
+
+	sns.lineplot(df, x="Insertion Size", y="Time")
+	plt.show()
+
+
+
+
 
 if __name__ == '__main__':
 	# partition_test()
 	# quicksort_test()
-	main()
+	# main()
+	optimize_selection()
+
+
+
