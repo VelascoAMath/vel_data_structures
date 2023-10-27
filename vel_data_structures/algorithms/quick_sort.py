@@ -35,6 +35,9 @@ def _partition(a, pivot_index=None, lo=None, hi=None):
 		return lo
 
 	if pivot_index is None:
+		swap_index = random.randint(lo, hi-1)
+		if swap_index != hi - 1:
+			swap(a, swap_index, hi-1)
 		pivot_index = hi - 1
 	else:
 		swap(a, hi-1, pivot_index)
