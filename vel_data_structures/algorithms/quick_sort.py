@@ -161,7 +161,9 @@ def optimize_selection():
 		results = {}
 
 	print(results)
-	trial_list = list(itertools.product(range(100), range(100)))
+	num_trials = 100
+	max_size = 10
+	trial_list = list(itertools.product(range(num_trials), range(max_size)))
 	trial_list = [x for x in trial_list if x not in results]
 	random.shuffle(trial_list)
 	print(trial_list)
@@ -199,54 +201,51 @@ def optimize_selection():
 
 def quick_vs_insertion():
 	if os.path.isfile('quick_vs_insert.pkl'):
-		with open('quick_vs_insert.pkl', 'rb') as f:
-			results = pickle.load(f)
+		try:
+			with open('quick_vs_insert.pkl', 'rb') as f:
+				results = pickle.load(f)
+		except:
+			results = {}
 	else:
 		results = {}
 
-	trial_list = [(size, trial) for size, trial in itertools.product(range(500), range(100))]
+	trial_list = [(size, trial, sort) for size, trial, sort in
+	              itertools.product(range(1000), range(10), ['Quick', 'Quick Opt', 'Insertion', 'Python']) if
+	              (size, trial, sort) not in results]
 	random.shuffle(trial_list)
-	for size, trial in tqdm(trial_list):
+	for size, trial, sort in tqdm(trial_list):
+		try:
 			a = list(range(size))
 			random.seed(trial)
 			random.shuffle(a)
 			start = time.time()
-			insertion_sort(a)
+			if sort == 'Insertion':
+				insertion_sort(a)
+			elif sort == 'Quick':
+				quicksort(a, insert_size=0)
+			elif sort == 'Quick Opt':
+				quicksort(a, insert_size=15)
+			elif sort == 'Python':
+				a.sort()
+			else:
+				raise Exception(f"{sort} is not supported!")
 			end = time.time()
-			results[('Insertion', trial, size)] = (end - start)
+			results[(size, trial, sort)] = (end - start)
+		except:
+			with open('quick_vs_insert.pkl', 'wb') as f:
+				pickle.dump(results, f)
+			return
 
-			a = list(range(size))
-			random.seed(trial)
-			random.shuffle(a)
-			start = time.time()
-			quicksort(a, insert_size=size)
-			end = time.time()
-			results[('Quick', trial, size)] = (end - start)
-
-			a = list(range(size))
-			random.seed(trial)
-			random.shuffle(a)
-			start = time.time()
-			quicksort(a)
-			end = time.time()
-			results[('Quick Opt', trial, size)] = (end - start)
-
-			a = list(range(size))
-			random.seed(trial)
-			random.shuffle(a)
-			start = time.time()
-			a.sort()
-			end = time.time()
-			results[('Python', trial, size)] = (end - start)
+		with open('quick_vs_insert.pkl', 'wb') as f:
+			pickle.dump(results, f)
 
 	data_list = list([tuple([*x, y]) for x, y in results.items()])
-	df = pd.DataFrame(data_list, columns=["Sort", "Trial",  "Size", "Time"])
+	df = pd.DataFrame(data_list, columns=["Size", "Trial", "Sort", "Time"])
 
 	print(df)
 
 	sns.lineplot(df, x="Size", y="Time", hue="Sort")
 	plt.show()
-
 
 
 if __name__ == '__main__':
@@ -255,5 +254,3 @@ if __name__ == '__main__':
 	# main()
 	# optimize_selection()
 	quick_vs_insertion()
-
-
