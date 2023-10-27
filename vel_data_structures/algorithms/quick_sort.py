@@ -187,6 +187,8 @@ def optimize_selection():
 
 	df = pd.DataFrame(data_list, columns=["Trial", "Insertion Size", "Time"])
 	print(df)
+	pd.set_option('display.max_rows', None)
+	print(df.groupby('Insertion Size').mean().sort_values(by='Time'))
 
 	sns.lineplot(df, x="Insertion Size", y="Time")
 	plt.show()
