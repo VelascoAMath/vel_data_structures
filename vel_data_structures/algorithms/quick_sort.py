@@ -97,7 +97,7 @@ def insertion_sort(array, lo=None, hi=None):
 			insert_index -= 1
 		array[insert_index] = removed_value
 
-def quicksort(a, lo=None, hi=None, lb=None, ub=None, insert_size=10):
+def quicksort(a, lo=None, hi=None, lb=None, ub=None, insert_size=28):
 	if (len(a) <= 1):
 		return
 	if lo is None:
@@ -194,6 +194,55 @@ def optimize_selection():
 	plt.show()
 
 
+def quick_vs_insertion():
+	if os.path.isfile('quick_vs_insert.pkl'):
+		with open('quick_vs_insert.pkl', 'rb') as f:
+			results = pickle.load(f)
+	else:
+		results = {}
+
+	trial_list = [(size, trial) for size, trial in itertools.product(range(500), range(100))]
+	random.shuffle(trial_list)
+	for size, trial in tqdm(trial_list):
+			a = list(range(size))
+			random.seed(trial)
+			random.shuffle(a)
+			start = time.time()
+			insertion_sort(a)
+			end = time.time()
+			results[('Insertion', trial, size)] = (end - start)
+
+			a = list(range(size))
+			random.seed(trial)
+			random.shuffle(a)
+			start = time.time()
+			quicksort(a, insert_size=size)
+			end = time.time()
+			results[('Quick', trial, size)] = (end - start)
+
+			a = list(range(size))
+			random.seed(trial)
+			random.shuffle(a)
+			start = time.time()
+			quicksort(a)
+			end = time.time()
+			results[('Quick Opt', trial, size)] = (end - start)
+
+			a = list(range(size))
+			random.seed(trial)
+			random.shuffle(a)
+			start = time.time()
+			a.sort()
+			end = time.time()
+			results[('Python', trial, size)] = (end - start)
+
+	data_list = list([tuple([*x, y]) for x, y in results.items()])
+	df = pd.DataFrame(data_list, columns=["Sort", "Trial",  "Size", "Time"])
+
+	print(df)
+
+	sns.lineplot(df, x="Size", y="Time", hue="Sort")
+	plt.show()
 
 
 
@@ -201,7 +250,7 @@ if __name__ == '__main__':
 	# partition_test()
 	# quicksort_test()
 	# main()
-	optimize_selection()
-
+	# optimize_selection()
+	quick_vs_insertion()
 
 
