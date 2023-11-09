@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9d36819a-0afe-4727-9daf-9d1d604f0e2c" name="Changes" comment="Saving the results of the comparison tests" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;VelascoAMath&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="ad1f96c7-6cbe-43ee-8540-d3dea228b26e" />
+        <option name="url" value="https://github.com/VelascoAMath/vel_data_structures.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2XAeA5jJ3T4tnT9Z16AdU0BGGnf" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;B+Tree&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/avelasco/Documents/vel_data_structures&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.black.configuration.BlackFormatterConfigurable&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/vel_data_structures/algorithms" />
+      <recent name="$PROJECT_DIR$/vel_data_structures" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9d36819a-0afe-4727-9daf-9d1d604f0e2c" name="Changes" comment="" />
+      <created>1698076164914</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1698076164914</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Added the quicksort algorithm">
+      <option name="closed" value="true" />
+      <created>1698088918378</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1698088918378</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added the quickselect algorithm">
+      <option name="closed" value="true" />
+      <created>1698092007072</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1698092007072</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added some bound parameter to quicksort so that only a portion of the list is sorted if the user wishes">
+      <option name="closed" value="true" />
+      <created>1698095653733</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1698095653733</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Using insertion sort on partitions with a size less then 10">
+      <option name="closed" value="true" />
+      <created>1698270633040</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1698270633040</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added support for arbitrary parition indices">
+      <option name="closed" value="true" />
+      <created>1698336863458</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1698336863458</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added selection sort support to our quicksort">
+      <option name="closed" value="true" />
+      <created>1698337706271</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1698337706271</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Made some test to see when we should use selection sort during our quick sort">
+      <option name="closed" value="true" />
+      <created>1698342859610</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1698342859610</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Ran the experiments. It seems that 28 is the optimal insertion sort size for quicksort">
+      <option name="closed" value="true" />
+      <created>1698415502691</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1698415502691</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Running an experiment that compares my quicksort to insertion sort. Turns out, my quicksort is quadratic. This is probably because I'm not choosing a random pivot. I will need to implement this improvement">
+      <option name="closed" value="true" />
+      <created>1698430820834</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1698430820835</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Quickselect will now use a random pivot">
+      <option name="closed" value="true" />
+      <created>1698432470135</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1698432470135</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Saving the results of the comparison tests">
+      <option name="closed" value="true" />
+      <created>1698443365281</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1698443365281</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added the quicksort algorithm" />
+    <MESSAGE value="Added the quickselect algorithm" />
+    <MESSAGE value="Added some bound parameter to quicksort so that only a portion of the list is sorted if the user wishes" />
+    <MESSAGE value="Using insertion sort on partitions with a size less then 10" />
+    <MESSAGE value="Added support for arbitrary parition indices" />
+    <MESSAGE value="Added selection sort support to our quicksort" />
+    <MESSAGE value="Made some test to see when we should use selection sort during our quick sort" />
+    <MESSAGE value="Ran the experiments. It seems that 28 is the optimal insertion sort size for quicksort" />
+    <MESSAGE value="Running an experiment that compares my quicksort to insertion sort. Turns out, my quicksort is quadratic. This is probably because I'm not choosing a random pivot. I will need to implement this improvement" />
+    <MESSAGE value="Quickselect will now use a random pivot" />
+    <MESSAGE value="Saving the results of the comparison tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Saving the results of the comparison tests" />
+  </component>
+</project>
