@@ -29,7 +29,8 @@ class _Node:
         return len(self.items) >= self.b
 
     def insert_child(self, child):
-        self.children.insert(child)
+        if child not in self.children:
+            self.children.insert(child)
 
     def __repr__(self):
         return f"_Node(b={self.b}, items={self.items}" + (f", children={self.children}" if len(self.children) > 0 else "") + ")"
@@ -60,32 +61,39 @@ class BPTree:
 
     def insert(self, item):
         if self.n == 0:
-            self.root = _Node()
+            self.root = _Node(self.b)
 
         path = self._find_item(item)
-        curr = (path[-1])
+        curr = (path.pop())
         curr.insert(item)
         self.n += 1
+        i = 0
 
         while curr.is_stuffed():
-            if curr != self.root:
-                new_sibling = _Node(self.b)
+            new_sibling = _Node(self.b)
+            new_sibling.insert(curr.items.pop())
+            if not curr.is_internal():
                 curr.next = new_sibling
-                new_sibling.insert(curr.items.pop())
+            if curr.is_internal():
+                new_sibling.insert_child(curr.children.pop())
+                new_sibling.insert_child(curr.children.pop())
 
+            if curr == self.root:
+                parent = _Node(self.b)
+                self.root = parent
+            else:
                 parent = path.pop()
+
+            if curr.is_internal():
+                parent.insert(curr.pop())
+                parent.insert_child(curr)
+                parent.insert_child(new_sibling)
+            else:
                 parent.insert_child(curr)
                 parent.insert_child(new_sibling)
                 parent.insert(new_sibling[0])
-            else:
-                self.root = _Node(self.b)
-                new_sibling = _Node(self.b)
-                curr.next = new_sibling
-
-                new_sibling.insert(curr.pop())
-                self.root.insert_child(curr)
-                self.root.insert_child(new_sibling)
-                self.root.items.insert(new_sibling[0])
+            curr = parent
+            i += 1
 
     def __str__(self):
         curr = self.root
