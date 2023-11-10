@@ -54,10 +54,13 @@ class BPTree:
             elif item >= curr.items[-1]:
                 curr = curr.children[-1]
             else:
-                for i in range(len(curr.items) - 1):
-                    if curr[i] <= item <= curr[i + 1]:
-                        curr = curr.children[i]
-                        break
+                if item < curr.items[0]:
+                    curr = curr.children[0]
+                else:
+                    for i in range(len(curr.items) - 1):
+                        if curr[i] <= item <= curr[i + 1]:
+                            curr = curr.children[i + 1]
+                            break
             path.append(curr)
 
         return path
