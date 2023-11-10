@@ -1,4 +1,7 @@
+import collections
 from dataclasses import dataclass, field
+
+import graphviz
 
 from vel_data_structures import List_Heap
 
@@ -106,6 +109,24 @@ class BPTree:
             curr = curr.next
         return str(result)
 
+    def to_graphviz(self, name=None):
+        dot = graphviz.Digraph('BP_Tree' + ('' if name is None else name), comment='The current B+Tree', format="pdf")
+
+        Q = collections.deque([self.root])
+
+        while Q:
+            curr = Q.popleft()
+            dot.node(str(id(curr)), str(curr.items.item_list))
+            for child in curr.children:
+                dot.edge(str(id(curr)), str(id(child)))
+                Q.append(child)
+
+
+        dot.save()
+        dot.render()
+
+
+
 
 
 def main():
@@ -115,6 +136,7 @@ def main():
 
     print(f"{b=}")
     print(b)
+    b.to_graphviz()
 
 
 if __name__ == "__main__":

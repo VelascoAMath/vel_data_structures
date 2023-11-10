@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d36819a-0afe-4727-9daf-9d1d604f0e2c" name="Changes" comment="Saving the results of the comparison tests" />
+    <list default="true" id="9d36819a-0afe-4727-9daf-9d1d604f0e2c" name="Changes" comment="IntelliJ files">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vel_data_structures/B+Tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/vel_data_structures/B+Tree.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -162,7 +165,31 @@
       <option name="project" value="LOCAL" />
       <updated>1698443365281</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Created a basic B+ tree which only allows for insertions and the printing of itself">
+      <option name="closed" value="true" />
+      <created>1699558229920</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1699558229920</updated>
+    </task>
+    <task id="LOCAL-00013" summary="IntelliJ files">
+      <option name="closed" value="true" />
+      <created>1699558254588</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1699558254588</updated>
+    </task>
+    <task id="LOCAL-00014" summary="IntelliJ files">
+      <option name="closed" value="true" />
+      <created>1699558259889</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1699558259889</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -177,6 +204,8 @@
     <MESSAGE value="Running an experiment that compares my quicksort to insertion sort. Turns out, my quicksort is quadratic. This is probably because I'm not choosing a random pivot. I will need to implement this improvement" />
     <MESSAGE value="Quickselect will now use a random pivot" />
     <MESSAGE value="Saving the results of the comparison tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Saving the results of the comparison tests" />
+    <MESSAGE value="Created a basic B+ tree which only allows for insertions and the printing of itself" />
+    <MESSAGE value="IntelliJ files" />
+    <option name="LAST_COMMIT_MESSAGE" value="IntelliJ files" />
   </component>
 </project>
