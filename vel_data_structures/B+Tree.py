@@ -56,6 +56,10 @@ class BPTree:
     n: int = 0
     root: _Node = None
 
+    def __post_init__(self):
+        self.started_iter = False
+        self.curr = None
+        self.curr_index = -1
     def _find_item(self, item):
         path = [self.root]
         curr = self.root
@@ -75,6 +79,8 @@ class BPTree:
         return path
 
     def insert(self, item):
+        self.started_iter = False
+        self.curr = None
         if self.n == 0:
             self.root = _Node(self.b)
 
@@ -149,15 +155,36 @@ class BPTree:
         return item in path[-1].items.item_list
 
     def __str__(self):
-        curr = self.root
-        while curr.is_internal():
-            curr = curr.children[0]
+        return str([i for i in self])
 
-        result = []
-        while curr is not None:
-            result.extend(curr.items)
-            curr = curr.next
-        return str(result)
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.n == 0:
+            self.started_iter = False
+            raise StopIteration
+
+        # We iterated through all leaf nodes
+        if self.curr is None and self.started_iter:
+            raise StopIteration
+
+
+        if self.curr is None:
+            self.curr_index = 0
+            self.curr = self.root
+            while self.curr.is_internal():
+                self.curr = self.curr.children[0]
+        else:
+            self.curr_index += 1
+
+        if self.curr_index >= len(self.curr.items):
+            self.curr = self.curr.next
+            self.curr_index = 0
+
+        if self.curr is None:
+            raise StopIteration
+        return self.curr.items[self.curr_index]
 
     def to_graphviz(self, name=None):
         dot = graphviz.Digraph(
