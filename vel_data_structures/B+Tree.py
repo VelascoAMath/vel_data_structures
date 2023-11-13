@@ -1,10 +1,14 @@
 import collections
+import random
 from dataclasses import dataclass, field
 
 import graphviz
+from tqdm import tqdm
 
 from vel_data_structures import List_Heap
 
+
+WITH_GRAPHVIZ = False
 
 
 @dataclass(order=True)
@@ -156,7 +160,11 @@ class BPTree:
         return str(result)
 
     def to_graphviz(self, name=None):
-        dot = graphviz.Digraph('BP_Tree' + ('' if name is None else name), comment='The current B+Tree', format="pdf")
+        dot = graphviz.Digraph(
+            "BP_Tree" + ("" if name is None else name),
+            comment="The current B+Tree",
+            format="pdf",
+        )
 
         Q = collections.deque([self.root])
 
