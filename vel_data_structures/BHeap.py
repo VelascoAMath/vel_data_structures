@@ -129,6 +129,18 @@ class BHeap(object):
 		if self._min_heap is None or (curr <= self._min_heap and self.is_min) or (curr >= self._min_heap and not self.is_min):
 			self._min_heap = curr
 
+	def peek(self):
+		'''
+		Returns the smallest item from the heap
+
+		:returns item: the smallest item in the heap
+		:raises Exception: if the heap is empty
+		'''
+		if self._n <= 0:
+			raise Exception("Cannot peek into an empty BHeap!")
+
+		return self._min_heap.item
+
 	def pop(self):
 		'''
 		Removes and returns the smallest item from the heap
@@ -180,26 +192,35 @@ def main():
 				a = set([random.randint(-n, n) for x in range(n)])
 				b = BHeap(a)
 
-				if min(a) != b._min_heap.item:
+				if min(a) != b.peek():
 					print(f"Adding {a=} and we have {b=}")
 					raise Exception(f"{n=} {x=} provides us the wrong minimum! We found {b=} instead of {min(a)}")
 
 				if len(b) != len(a):
 					print(f"Adding {a=} and we have {b=}")
 					raise Exception(f"{n=} {x=} provides us the wrong length! We found {len(b)=} instead of {len(a)}")
+
+				if min(a) != b.pop():
+					print(f"Adding {a=} and we have {b=}")
+					raise Exception(f"{n=} {x=} provides us the wrong minimum! We found {b=} instead of {min(a)}")
+
 		for n in tqdm(list(range(1, 100)), desc='size loop', smoothing=0):
 			for x in trange(10000, desc='random loop'):
 				random.seed(x)
 				a = set([random.randint(-n, n) for x in range(n)])
 				b = BHeap(a, is_min=False)
 
-				if max(a) != b._min_heap.item:
+				if max(a) != b.peek():
 					print(f"Adding {a=} and we have {b=}")
-					raise Exception(f"{n=} {x=} provides us the wrong minimum! We found {b=} instead of {max(a)}")
+					raise Exception(f"{n=} {x=} provides us the wrong maximum! We found {b=} instead of {min(a)}")
 
 				if len(b) != len(a):
 					print(f"Adding {a=} and we have {b=}")
 					raise Exception(f"{n=} {x=} provides us the wrong length! We found {len(b)=} instead of {len(a)}")
+
+				if max(a) != b.pop():
+					print(f"Adding {a=} and we have {b=}")
+					raise Exception(f"{n=} {x=} provides us the wrong maximum! We found {b=} instead of {min(a)}")
 
 	def sort_test():
 		n = 10000
@@ -215,6 +236,11 @@ def main():
 				s.append(b.pop())
 				if len(b) != i:
 					raise Exception("NO")
+				if b:
+					b.peek()
+				if len(b) != i:
+					raise Exception("peek() changes the size of the BHeap")
+
 				i -= 1
 
 			if a != s:
