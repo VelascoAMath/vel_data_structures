@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 class _Tree(object):
 	item: int = None
 	children: list = field(default_factory=list)
+	is_min: bool = True
 
 	def get_k(self):
 		'''
@@ -35,7 +36,12 @@ class _Tree(object):
 		if self.get_k() != other.get_k():
 			raise Exception("The trees must have the same k! Their ks are {self.get_k()} and {self.get_k()}")
 
-		if self.item < other.item:
+		if self.is_min and self.item < other.item:
+			if self.children is None:
+				self.children = []
+			self.children.append(other)
+			return self
+		elif not self.is_min and self.item > other.item:
 			if self.children is None:
 				self.children = []
 			self.children.append(other)
@@ -58,14 +64,16 @@ class BHeap(object):
 	_forest: list = field(default_factory=list)
 	_min_heap: _Tree = None
 	_n: int = 0
+	is_min: bool = True
 
-	def __init__(self, items=None):
+	def __init__(self, items=None, is_min=True):
 		'''
 		Initializes the tree with the items (if provided)
 
 		:param list( items ) items: list of items to insert into the tree
 		'''
 		self._forest = []
+		self.is_min = is_min
 
 		if items is not None:
 			for item in items:
@@ -113,12 +121,12 @@ class BHeap(object):
 
 		:param item: the item to insert
 		'''
-		curr = _Tree(item)
+		curr = _Tree(item, is_min=self.is_min)
 		self._n += 1
 
 		curr = self._insert_tree(curr)
 
-		if self._min_heap is None or curr <= self._min_heap:
+		if self._min_heap is None or (curr <= self._min_heap and self.is_min) or (curr >= self._min_heap and not self.is_min):
 			self._min_heap = curr
 
 	def pop(self):
@@ -147,7 +155,7 @@ class BHeap(object):
 
 		for tree in self._forest:
 			if tree is not None:
-				if self._min_heap is None or tree < self._min_heap:
+				if self._min_heap is None or (self.is_min and tree < self._min_heap) or (not self.is_min and tree > self._min_heap):
 					self._min_heap = tree
 
 		return item
@@ -166,7 +174,6 @@ class BHeap(object):
 def main():
 
 	def insert_test():
-		# for n in tqdm(random.sample(list(range(1, 100)), 99), desc='size loop', smoothing=0):
 		for n in tqdm(list(range(1, 100)), desc='size loop', smoothing=0):
 			for x in trange(10000, desc='random loop'):
 				random.seed(x)
@@ -180,6 +187,19 @@ def main():
 				if len(b) != len(a):
 					print(f"Adding {a=} and we have {b=}")
 					raise Exception(f"{n=} {x=} provides us the wrong length! We found {len(b)=} instead of {len(a)}")
+		for n in tqdm(list(range(1, 100)), desc='size loop', smoothing=0):
+			for x in trange(10000, desc='random loop'):
+				random.seed(x)
+				a = set([random.randint(-n, n) for x in range(n)])
+				b = BHeap(a, is_min=False)
+
+				if max(a) != b._min_heap.item:
+					print(f"Adding {a=} and we have {b=}")
+					raise Exception(f"{n=} {x=} provides us the wrong minimum! We found {b=} instead of {max(a)}")
+
+				if len(b) != len(a):
+					print(f"Adding {a=} and we have {b=}")
+					raise Exception(f"{n=} {x=} provides us the wrong length! We found {len(b)=} instead of {len(a)}")
 
 	def sort_test():
 		n = 10000
@@ -188,6 +208,23 @@ def main():
 			a = list([random.randint(-n, n) for x in range(n)])
 			b = BHeap(a)
 			a.sort()
+			s = []
+
+			i = n - 1
+			while b:
+				s.append(b.pop())
+				if len(b) != i:
+					raise Exception("NO")
+				i -= 1
+
+			if a != s:
+				raise Exception("{x=} causes an error!")
+
+		for x in tqdm(list(range(10000)), desc='size loop', smoothing=0):
+			random.seed(x)
+			a = list([random.randint(-n, n) for x in range(n)])
+			b = BHeap(a, is_min=False)
+			a.sort(reverse=True)
 			s = []
 
 			i = n - 1
