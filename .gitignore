@@ -1,6 +1,5 @@
-
-
-*~
-__pycache__
-*/__pycache__
-*.prof
+*.gv
+*.pdf
+*.coverage
+.DS_Store
+*/__pycache__/*
