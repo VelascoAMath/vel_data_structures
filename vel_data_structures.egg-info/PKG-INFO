@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: vel-data-structures
+Version: 3.6.1
+Summary: Installation of Package
+Home-page: https://github.com/VelascoAMath/vel_data_structures/
+Author: Alfredo Velasco
+Author-email: alfredo0234@gmail.com
+License: MIT
+Project-URL: Bug Tracker, https://github.com/VelascoAMath/vel_data_structures/issues
+Description-Content-Type: text/markdown
+
+# PythonDataStructures
+Just a collection of various data structures coded in Python
