@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="62bcdb62-2103-4b89-9000-fc6ba23aee33" name="Changes" comment="IntelliJ files">
-      <change afterPath="$PROJECT_DIR$/vel_data_structures/RB_Tree.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vel_data_structures/RBTree.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vel_data_structures/RB_Tree.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vel_data_structures/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/vel_data_structures/__init__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
