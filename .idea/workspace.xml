@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62bcdb62-2103-4b89-9000-fc6ba23aee33" name="Changes" comment="IntelliJ files">
+    <list default="true" id="8f16ff54-5ee8-4c98-a8c5-323090d2d092" name="Changes" comment="IntelliJ files">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vel_data_structures.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vel_data_structures.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vel_data_structures/AVL_Set.py" beforeDir="false" afterPath="$PROJECT_DIR$/vel_data_structures/AVL_Set.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,47 +23,38 @@
     &quot;assignee&quot;: &quot;VelascoAMath&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/VelascoAMath/vel_data_structures.git",
-    "accountId": "ad1f96c7-6cbe-43ee-8540-d3dea228b26e"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/VelascoAMath/vel_data_structures.git&quot;,
+    &quot;accountId&quot;: &quot;ad1f96c7-6cbe-43ee-8540-d3dea228b26e&quot;
   }
-}]]></component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/vel_data_structures/List_Heap.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 0
+  &quot;associatedIndex&quot;: 4
 }</component>
-  <component name="ProjectId" id="2as0MUer2pnNVdw16l7yGm7ZC33" />
+  <component name="ProjectId" id="2y9KyrfdN7NS0sYlt44WCQBr3fv" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.B+Tree.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "AVL"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.List_Heap.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;List__Heap&quot;
   }
-}]]></component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-python-sdk-48aec45f0201-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.17011.127" />
-      </set>
-    </attachedChunks>
-  </component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="62bcdb62-2103-4b89-9000-fc6ba23aee33" name="Changes" comment="" />
-      <created>1705091930382</created>
+      <changelist id="8f16ff54-5ee8-4c98-a8c5-323090d2d092" name="Changes" comment="IntelliJ files" />
+      <created>1749241607169</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1705091930382</updated>
+      <updated>1749241607169</updated>
     </task>
     <servers />
   </component>
